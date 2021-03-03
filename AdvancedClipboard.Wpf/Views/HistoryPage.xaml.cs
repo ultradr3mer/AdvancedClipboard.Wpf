@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AdvancedClipboard.Wpf
+namespace AdvancedClipboard.Wpf.Views
 {
   /// <summary>
-  /// Interaction logic for MainWindow.xaml
+  /// Interaction logic for HistoryPage.xaml
   /// </summary>
-  public partial class MainWindow : Window
+  public partial class HistoryPage : UserControl
   {
-    public MainWindow()
+    public HistoryPage()
     {
       InitializeComponent();
     }

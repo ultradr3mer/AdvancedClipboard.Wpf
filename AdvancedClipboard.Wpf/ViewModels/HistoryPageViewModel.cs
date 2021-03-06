@@ -1,6 +1,7 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Unity;
@@ -18,12 +19,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Constructors
 
-    public HistoryPageViewModel(IUnityContainer container, Client client)
+    public HistoryPageViewModel(IUnityContainer container, ClipboardService service)
     {
+      service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
+      this.Entrys = new BindingList<HistoryPageEntryViewModel>(service.ClipboardItems.Select(o => container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
       this.container = container;
-      this.client = client;
-
-      this.LoadAsync();
     }
 
     #endregion Constructors
@@ -36,11 +36,16 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Methods
 
-    protected virtual async void LoadAsync()
+    private void ClipboardItemsListChanged(object sender, ListChangedEventArgs e)
     {
-      var data = await client.ClipboardAsync();
-      var vms = data.Select(o => container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList();
-      this.Entrys = new BindingList<HistoryPageEntryViewModel>(vms);
+      var listSender = (IList<ClipboardGetData>)sender;
+
+      if(e.ListChangedType == ListChangedType.ItemAdded)
+      {
+        var addedData = listSender[e.NewIndex];
+        var newEntry = container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(addedData);
+        this.Entrys.Insert(e.NewIndex, newEntry);
+      }
     }
 
     #endregion Methods

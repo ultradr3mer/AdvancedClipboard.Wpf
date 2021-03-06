@@ -11,14 +11,6 @@ namespace AdvancedClipboard.Wpf.Composite
 
     #endregion Events
 
-    #region Properties
-
-    public bool IsBusy { get; set; }
-
-    public string Title { get; set; }
-
-    #endregion Properties
-
     #region Methods
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = "")

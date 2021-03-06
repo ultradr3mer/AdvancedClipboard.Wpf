@@ -1,5 +1,6 @@
 ﻿using AdvancedClipboard.Wpf.ViewModels;
 using AdvancedClipboard.Wpf.Views;
+using ManagedWinapi;
 using Prism.Ioc;
 using System.Windows;
 using Unity;
@@ -21,8 +22,8 @@ namespace AdvancedClipboard.Wpf
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
-      //containerRegistry.RegisterSingleton<IUnityContainer>();
       containerRegistry.RegisterSingleton<MainWindowViewModel>();
+      containerRegistry.RegisterSingleton<ClipboardNotifier>();
     }
 
     #endregion Methods

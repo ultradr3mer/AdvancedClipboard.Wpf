@@ -41,6 +41,7 @@
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
             Margin="5"
-            Opacity="1"/>
+            Opacity="1"
+            Command="{Binding RefreshCommand}"/>
   </Grid>
 </UserControl>

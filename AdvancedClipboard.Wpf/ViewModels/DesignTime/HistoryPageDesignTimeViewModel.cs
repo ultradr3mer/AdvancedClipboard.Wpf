@@ -19,6 +19,10 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
       };
     }
 
+    protected override void Load()
+    {
+    }
+
     #endregion Constructors
   }
 }

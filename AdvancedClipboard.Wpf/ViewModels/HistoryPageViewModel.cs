@@ -1,6 +1,8 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
+using Prism.Commands;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,8 +14,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
   {
     #region Fields
 
-    private readonly Client client;
     private readonly IUnityContainer container;
+    private readonly ClipboardService service;
 
     #endregion Fields
 
@@ -21,9 +23,12 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public HistoryPageViewModel(IUnityContainer container, ClipboardService service)
     {
-      service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
-      this.Entrys = new BindingList<HistoryPageEntryViewModel>(service.ClipboardItems.Select(o => container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
       this.container = container;
+      this.service = service;
+
+      this.RefreshCommand = new DelegateCommand(this.RefreshCommandExecute);
+
+      this.Load();
     }
 
     #endregion Constructors
@@ -31,21 +36,33 @@ namespace AdvancedClipboard.Wpf.ViewModels
     #region Properties
 
     public BindingList<HistoryPageEntryViewModel> Entrys { get; set; }
+    public DelegateCommand RefreshCommand { get; }
 
     #endregion Properties
 
     #region Methods
 
+    protected virtual void Load()
+    {
+      this.service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
+      this.Entrys = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
+    }
+
     private void ClipboardItemsListChanged(object sender, ListChangedEventArgs e)
     {
-      var listSender = (IList<ClipboardGetData>)sender;
+      IList<ClipboardGetData> listSender = (IList<ClipboardGetData>)sender;
 
-      if(e.ListChangedType == ListChangedType.ItemAdded)
+      if (e.ListChangedType == ListChangedType.ItemAdded)
       {
-        var addedData = listSender[e.NewIndex];
-        var newEntry = container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(addedData);
+        ClipboardGetData addedData = listSender[e.NewIndex];
+        HistoryPageEntryViewModel newEntry = this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(addedData);
         this.Entrys.Insert(e.NewIndex, newEntry);
       }
+    }
+
+    private void RefreshCommandExecute()
+    {
+      this.service.Refresh();
     }
 
     #endregion Methods

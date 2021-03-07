@@ -12,6 +12,7 @@ namespace AdvancedClipboard.Wpf.Views
   /// </summary>
   public partial class MainWindow : MetroWindow
   {
+    private const string RegionName = "MainRegion";
     #region Fields
 
     private IUnityContainer container;
@@ -27,7 +28,8 @@ namespace AdvancedClipboard.Wpf.Views
 
       this.container = container;
 
-      regionManager.RegisterViewWithRegion("MainRegion", () => container.Resolve<HistoryPage>());
+      regionManager.RegisterViewWithRegion(RegionName, () => container.Resolve<LoginPage>());
+      regionManager.RegisterViewWithRegion(RegionName, () => container.Resolve<HistoryPage>());
     }
 
     #endregion Constructors

@@ -1,7 +1,9 @@
-﻿using AdvancedClipboard.Wpf.ViewModels;
+﻿using AdvancedClipboard.Wpf.Services;
+using AdvancedClipboard.Wpf.ViewModels;
 using AdvancedClipboard.Wpf.Views;
 using ManagedWinapi;
 using Prism.Ioc;
+using System.Net.Http;
 using System.Windows;
 using Unity;
 
@@ -24,6 +26,10 @@ namespace AdvancedClipboard.Wpf
     {
       containerRegistry.RegisterSingleton<MainWindowViewModel>();
       containerRegistry.RegisterSingleton<ClipboardNotifier>();
+      containerRegistry.RegisterSingleton<Client>();
+
+      var container = this.Container.Resolve<IUnityContainer>();
+      container.RegisterType<HttpClient, CustomHttpClient>();
     }
 
     #endregion Methods

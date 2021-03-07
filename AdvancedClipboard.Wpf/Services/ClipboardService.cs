@@ -26,7 +26,7 @@ namespace AdvancedClipboard.Wpf.Services
       this.client = client;
       this.changedEvent = eventAggregator.GetEvent<ClipboardChangedEvent>();
       this.changedEvent.Subscribe(this.NotifierClipboardSta, ThreadOption.UIThread);
-      this.LoadAsync();
+      //this.LoadAsync();
     }
 
     private void NotifierClipboardSta(ClipboardChangedData obj)
@@ -42,7 +42,7 @@ namespace AdvancedClipboard.Wpf.Services
     private void NotifierClipboard(object sender, EventArgs e)
     {
       // Publish event to perform further processing on the UI thread.
-      this.changedEvent.Publish(new ClipboardChangedData());
+      //this.changedEvent.Publish(new ClipboardChangedData());
     }
 
     private async void PostPlaintextAsync(string textContent)
@@ -69,6 +69,12 @@ namespace AdvancedClipboard.Wpf.Services
         this.ClipboardItems.Insert(0, item);
         this.lastText = item.PlainTextContent;
       }
+    }
+
+    internal void Refresh()
+    {
+      this.ClipboardItems.Clear();
+      this.LoadAsync();
     }
 
     #endregion Methods

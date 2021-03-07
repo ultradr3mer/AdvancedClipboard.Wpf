@@ -8,10 +8,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
   {
     #region Constructors
 
-    public MainWindowViewModel(IUnityContainer unityContainer)
+    public MainWindowViewModel(Client unityContainer)
     {
-      var client = new Client(new CustomHttpClient("ClaraOriginal", ""));
-      unityContainer.RegisterInstance(client);
     }
 
     #endregion Constructors

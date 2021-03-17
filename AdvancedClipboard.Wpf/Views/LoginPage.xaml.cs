@@ -15,20 +15,21 @@ namespace AdvancedClipboard.Wpf.Views
 
     private readonly Client client;
     private readonly IRegionManager regionManager;
+    private readonly ClipboardService clipboardService;
     private readonly SettingsService settingsService;
 
     #endregion Fields
 
     #region Constructors
 
-    public LoginPage(SettingsService settingsService, Client client, IRegionManager regionManager)
+    public LoginPage(SettingsService settingsService, Client client, IRegionManager regionManager, ClipboardService clipboardService)
     {
       InitializeComponent();
 
       this.settingsService = settingsService;
       this.client = client;
       this.regionManager = regionManager;
-
+      this.clipboardService = clipboardService;
       this.username.Text = settingsService.UserName;
       this.password.Password = settingsService.UserPassword;
     }
@@ -46,6 +47,8 @@ namespace AdvancedClipboard.Wpf.Views
         this.settingsService.SetCredentials(this.username.Text, this.password.Password);
         await this.client.ClipboardAuthorizeAsync();
         this.regionManager.RequestNavigate("MainRegion", new Uri(nameof(HistoryPage), UriKind.Relative));
+        await this.clipboardService.Refresh();
+        this.clipboardService.IsWatchingClipboard = true;
 
         this.message.Text = string.Empty;
         this.message.Visibility = Visibility.Collapsed;

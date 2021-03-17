@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using AdvancedClipboard.Wpf.Extensions;
+using AdvancedClipboard.Wpf.Services;
+using System.ComponentModel;
 
 namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 {
@@ -10,19 +12,25 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
     {
       this.Entrys = new BindingList<HistoryPageEntryViewModel>()
       {
-        new HistoryPageEntryViewModel(){PlainTextContent = "Erster Text"},
-        new HistoryPageEntryViewModel(){PlainTextContent = "Zweiter Text"},
-        new HistoryPageEntryViewModel(){PlainTextContent = "Anderer Text"},
-        new HistoryPageEntryViewModel(){PlainTextContent = "Noch ein Text"},
-        new HistoryPageEntryViewModel(){PlainTextContent = "Dieser Text"},
-        new HistoryPageEntryViewModel(){PlainTextContent = "Der andere Text"},
+        new HistoryPageEntryViewModel(){TextContent = "Erster Text"},
+        new HistoryPageEntryViewModel().GetWithDataModel(new ClipboardGetData{ImageContentUrl = "EFE315E4553BBAFA/clip_20210316_213415.JPG"}),
+        new HistoryPageEntryViewModel(){TextContent = "Zweiter Text"},
+        new HistoryPageEntryViewModel(){TextContent = "Anderer Text"},
+        new HistoryPageEntryViewModel(){TextContent = "Noch ein Text"},
+        new HistoryPageEntryViewModel().GetWithDataModel(new ClipboardGetData{ImageContentUrl = "26C8C736070D7EFF/clip_20210316_213458.jpg"}),
+        new HistoryPageEntryViewModel(){TextContent = "Dieser Text"},
+        new HistoryPageEntryViewModel(){TextContent = "Der andere Text"},
       };
     }
+
+    #endregion Constructors
+
+    #region Methods
 
     protected override void Load()
     {
     }
 
-    #endregion Constructors
+    #endregion Methods
   }
 }

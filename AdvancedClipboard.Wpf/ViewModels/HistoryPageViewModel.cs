@@ -60,9 +60,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
       }
     }
 
-    private void RefreshCommandExecute()
+    private async void RefreshCommandExecute()
     {
-      this.service.Refresh();
+      await this.service.Refresh();
     }
 
     #endregion Methods

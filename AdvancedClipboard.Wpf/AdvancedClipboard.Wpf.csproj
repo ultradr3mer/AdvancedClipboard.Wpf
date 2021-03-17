@@ -99,7 +99,9 @@
     <Compile Include="Composite\BaseViewModelOfT.cs" />
     <Compile Include="Composite\BaseViewModelOfTinTout.cs" />
     <Compile Include="Composite\ObjectNullBoolConverter.cs" />
-    <Compile Include="Composite\StringNullOrEmptyBoolConverter.cs" />
+    <Compile Include="Composite\UriNullVisibilityConverter.cs" />
+    <Compile Include="Composite\StringNullOrEmptyVisibilityConverter.cs" />
+    <Compile Include="Data\SimpleFileTokenData.cs" />
     <Compile Include="Events\ClipboardChangedEvent.cs" />
     <Compile Include="Events\CredentialsChangedEvent.cs" />
     <Compile Include="Extensions\BaseViewModelExtensions.cs" />
@@ -180,4 +182,7 @@
     <Error Condition="!Exists('..\packages\mwinapi.0.3.0.3\build\mwinapi.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\mwinapi.0.3.0.3\build\mwinapi.targets'))" />
   </Target>
   <Import Project="..\packages\mwinapi.0.3.0.3\build\mwinapi.targets" Condition="Exists('..\packages\mwinapi.0.3.0.3\build\mwinapi.targets')" />
+  <PropertyGroup>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
 </Project>

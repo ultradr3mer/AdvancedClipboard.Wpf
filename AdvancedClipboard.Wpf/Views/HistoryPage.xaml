@@ -5,12 +5,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:designTime="clr-namespace:AdvancedClipboard.Wpf.ViewModels.DesignTime"
-             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" xmlns:comp="clr-namespace:AdvancedClipboard.Wpf.Composite"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext ="{d:DesignInstance {x:Type designTime:HistoryPageDesignTimeViewModel}, IsDesignTimeCreatable=True}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <comp:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyBoolConverter" />
+      <comp:UriNullVisibilityConverter x:Key="UriNullVisibilityConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
   <Grid>
+    <ScrollViewer>
     <ItemsControl ItemsSource="{Binding Entrys}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
@@ -19,18 +26,26 @@
               <Label Content="{Binding PlainTextContent}" />
             </Grid>
           </Border>-->
-          <Button Margin="3" Content="{Binding PlainTextContent}" Command="{Binding LoadIntoClipboardCommand}" HorizontalContentAlignment="Left" >
+          <Button Margin="3" 
+                  Command="{Binding LoadIntoClipboardCommand}"
+                  HorizontalContentAlignment="Left" >
             <Button.Style>
+              
               <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                 <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
                 <Setter Property="FontWeight" Value="Normal"/>
                 <Setter Property="FontSize" Value="14" />
               </Style>
             </Button.Style>
+            <Grid>
+              <Label Content="{Binding TextContent}" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+              <Image Source="{Binding ImageUrl}" Height="100" Visibility="{Binding ImageUrl, Converter={StaticResource UriNullVisibilityConverter}}"/>
+            </Grid>
           </Button>
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>
+    </ScrollViewer>
     <Button Content="" 
             Width="48" 
             Height="48" 

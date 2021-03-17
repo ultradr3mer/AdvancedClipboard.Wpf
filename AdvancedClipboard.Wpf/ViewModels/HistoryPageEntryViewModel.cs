@@ -1,8 +1,12 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
+using AdvancedClipboard.Wpf.Data;
 using AdvancedClipboard.Wpf.Services;
 using Prism.Commands;
 using System;
+using System.IO;
+using System.Net;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
@@ -15,12 +19,18 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.LoadIntoClipboardCommand = new DelegateCommand(this.LoadIntoClipboardCommandExecute);
     }
 
+    protected override void OnReadingDataModel(ClipboardGetData data)
+    {
+      this.ImageUrl = SimpleFileTokenData.CreateUrl(data.ImageContentUrl);
+    }
+
     #endregion Constructors
 
     #region Properties
 
-    public string PlainTextContent { get; set; }
+    public string TextContent { get; set; }
     public DelegateCommand LoadIntoClipboardCommand { get; }
+    public Uri ImageUrl { get; private set; }
 
     #endregion Properties
 
@@ -28,7 +38,18 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private void LoadIntoClipboardCommandExecute()
     {
-      Clipboard.SetText(PlainTextContent);
+      if(ImageUrl != null)
+      {
+        BitmapImage image = new BitmapImage();
+        image.BeginInit();
+        image.UriSource = ImageUrl;
+        image.EndInit();
+        Clipboard.SetImage(image);
+      }
+      else if(!string.IsNullOrEmpty(TextContent))
+      {
+        Clipboard.SetText(TextContent);
+      }
     }
 
     #endregion Methods

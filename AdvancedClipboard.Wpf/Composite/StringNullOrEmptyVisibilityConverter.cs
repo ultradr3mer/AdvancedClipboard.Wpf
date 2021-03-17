@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Data;
 
 namespace AdvancedClipboard.Wpf.Composite
 {
-  public class StringNullOrEmptyBoolConverter : IValueConverter
+  public class StringNullOrEmptyVisibilityConverter : IValueConverter
   {
     #region Methods
 
@@ -16,7 +17,7 @@ namespace AdvancedClipboard.Wpf.Composite
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       var s = value as string;
-      return !string.IsNullOrWhiteSpace(s);
+      return string.IsNullOrWhiteSpace(s) ? Visibility.Collapsed : Visibility.Visible;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

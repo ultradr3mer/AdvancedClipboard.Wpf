@@ -4,6 +4,7 @@ using Prism.Events;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -17,7 +18,7 @@ namespace AdvancedClipboard.Wpf.Services
     private readonly ClipboardChangedEvent changedEvent;
     private readonly Client client;
     private string lastText;
-    private BitmapSource lastImage;
+    private string lastImageMd5;
 
     #endregion Fields
 
@@ -79,7 +80,6 @@ namespace AdvancedClipboard.Wpf.Services
       }
       else if ((imageContent = Clipboard.GetImage()) != null)
       {
-        this.lastImage = imageContent;
         this.PostImageAsync(imageContent);
       }
     }
@@ -93,8 +93,16 @@ namespace AdvancedClipboard.Wpf.Services
       encoder.Save(memoryStream);
       memoryStream.Seek(0, SeekOrigin.Begin);
 
-      var result = await this.client.ClipboardPostimageAsync(".png", new FileParameter(memoryStream));
-      this.ClipboardItems.Insert(0, result);
+      var md5 = MD5.Create();
+      var currentImageMd5 = Convert.ToBase64String(md5.ComputeHash(memoryStream));
+      memoryStream.Seek(0, SeekOrigin.Begin);
+
+      if (this.lastImageMd5 != currentImageMd5)
+      {
+        this.lastImageMd5 = currentImageMd5;
+        var result = await this.client.ClipboardPostimageAsync(".png", new FileParameter(memoryStream));
+        this.ClipboardItems.Insert(0, result);
+      }
     }
 
     private async void PostPlaintextAsync(string textContent)

@@ -1,9 +1,10 @@
-﻿using AdvancedClipboard.Wpf.Events;
-using ManagedWinapi;
+﻿using AdvancedClipboard.Wpf.Data;
 using Prism.Events;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,21 +16,17 @@ namespace AdvancedClipboard.Wpf.Services
   {
     #region Fields
 
-    private readonly ClipboardChangedEvent changedEvent;
     private readonly Client client;
-    private string lastText;
     private string lastImageMd5;
+    private string lastText;
 
     #endregion Fields
 
     #region Constructors
 
-    public ClipboardService(ClipboardNotifier notifier, Client client, IEventAggregator eventAggregator)
+    public ClipboardService(Client client)
     {
-      notifier.ClipboardChanged += this.NotifierClipboard;
       this.client = client;
-      this.changedEvent = eventAggregator.GetEvent<ClipboardChangedEvent>();
-      this.changedEvent.Subscribe(this.NotifierClipboardSta, ThreadOption.UIThread);
     }
 
     #endregion Constructors
@@ -43,30 +40,7 @@ namespace AdvancedClipboard.Wpf.Services
 
     #region Methods
 
-    public async Task Refresh()
-    {
-      this.ClipboardItems.Clear();
-
-      var data = await client.ClipboardAsync();
-      foreach (var item in data)
-      {
-        this.ClipboardItems.Insert(0, item);
-        this.lastText = item.TextContent;
-      }
-    }
-
-    private void NotifierClipboard(object sender, EventArgs e)
-    {
-      if (!this.IsWatchingClipboard)
-      {
-        return;
-      }
-
-      // Publish event to perform further processing on the UI thread.
-      this.changedEvent.Publish(new ClipboardChangedData());
-    }
-
-    private void NotifierClipboardSta(ClipboardChangedData obj)
+    public void AddClipboardContent()
     {
       string textContent;
       BitmapSource imageContent;
@@ -81,6 +55,43 @@ namespace AdvancedClipboard.Wpf.Services
       else if ((imageContent = Clipboard.GetImage()) != null)
       {
         this.PostImageAsync(imageContent);
+      }
+    }
+
+    public async Task Delete(Guid id)
+    {
+      await this.client.ClipboardDeleteAsync(id);
+
+      var itemToRemove = ClipboardItems.FirstOrDefault(o => o.Id == id);
+      this.ClipboardItems.Remove(itemToRemove);
+    }
+
+    public async Task Refresh()
+    {
+      this.ClipboardItems.Clear();
+
+      var data = await client.ClipboardGetAsync();
+      foreach (var item in data)
+      {
+        this.ClipboardItems.Insert(0, item);
+        this.lastText = item.TextContent;
+      }
+    }
+
+    internal void SendToClipboard(ClipboardGetData clipboardGetData)
+    {
+      if (clipboardGetData.ImageContentUrl != null)
+      {
+        var url = SimpleFileTokenData.CreateUrl(clipboardGetData.ImageContentUrl);
+        WebRequest request = WebRequest.Create(url);
+        WebResponse response = request.GetResponse();
+        Stream responseStream = response.GetResponseStream();
+        var bi = BitmapFrame.Create(responseStream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+        bi.DownloadCompleted += (o, a) => Clipboard.SetImage(bi);
+      }
+      else if (!string.IsNullOrEmpty(clipboardGetData.TextContent))
+      {
+        Clipboard.SetText(clipboardGetData.TextContent);
       }
     }
 

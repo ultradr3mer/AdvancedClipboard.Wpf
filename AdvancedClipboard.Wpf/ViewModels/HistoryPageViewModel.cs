@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
@@ -27,6 +28,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.service = service;
 
       this.RefreshCommand = new DelegateCommand(this.RefreshCommandExecute);
+      this.AddCommand = new DelegateCommand(this.AddCommandExecute);
 
       this.Load();
     }
@@ -35,8 +37,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Properties
 
+    public ICommand AddCommand { get; }
+
     public BindingList<HistoryPageEntryViewModel> Entrys { get; set; }
-    public DelegateCommand RefreshCommand { get; }
+
+    public ICommand RefreshCommand { get; }
 
     #endregion Properties
 
@@ -48,6 +53,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.Entrys = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
     }
 
+    private void AddCommandExecute()
+    {
+      this.service.AddClipboardContent();
+    }
+
     private void ClipboardItemsListChanged(object sender, ListChangedEventArgs e)
     {
       IList<ClipboardGetData> listSender = (IList<ClipboardGetData>)sender;
@@ -57,6 +67,10 @@ namespace AdvancedClipboard.Wpf.ViewModels
         ClipboardGetData addedData = listSender[e.NewIndex];
         HistoryPageEntryViewModel newEntry = this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(addedData);
         this.Entrys.Insert(e.NewIndex, newEntry);
+      }
+      else if(e.ListChangedType == ListChangedType.ItemDeleted)
+      {
+        this.Entrys.RemoveAt(e.NewIndex);
       }
     }
 

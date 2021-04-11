@@ -3,9 +3,10 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:comp="clr-namespace:AdvancedClipboard.Wpf.Composite"
              xmlns:designTime="clr-namespace:AdvancedClipboard.Wpf.ViewModels.DesignTime"
-             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" xmlns:comp="clr-namespace:AdvancedClipboard.Wpf.Composite"
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -18,45 +19,73 @@
   </UserControl.Resources>
   <Grid>
     <ScrollViewer>
-    <ItemsControl ItemsSource="{Binding Entrys}">
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <!--<Border Margin="3" BorderBrush="{DynamicResource MahApps.Brushes.Gray3}" BorderThickness="1">
+      <ItemsControl ItemsSource="{Binding Entrys}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <!--<Border Margin="3" BorderBrush="{DynamicResource MahApps.Brushes.Gray3}" BorderThickness="1">
             <Grid Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
               <Label Content="{Binding PlainTextContent}" />
             </Grid>
           </Border>-->
-          <Button Margin="3" 
+            <Button Margin="3"
                   Command="{Binding LoadIntoClipboardCommand}"
-                  HorizontalContentAlignment="Left" >
-            <Button.Style>
-              
-              <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
-                <Setter Property="FontWeight" Value="Normal"/>
-                <Setter Property="FontSize" Value="14" />
-              </Style>
-            </Button.Style>
-            <Grid>
-              <Label Content="{Binding TextContent}" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
-              <Image Source="{Binding ImageUrl}" Height="100" Visibility="{Binding ImageUrl, Converter={StaticResource UriNullVisibilityConverter}}"/>
-            </Grid>
-          </Button>
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
+                  HorizontalContentAlignment="Stretch">
+              <Button.Style>
+
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                  <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
+                  <Setter Property="FontWeight" Value="Normal" />
+                  <Setter Property="FontSize" Value="14" />
+                </Style>
+              </Button.Style>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding TextContent}" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+                <Image Source="{Binding ImageUrl}" Height="100" Visibility="{Binding ImageUrl, Converter={StaticResource UriNullVisibilityConverter}}" />
+                <Button Command="{Binding DeleteCommand}" Grid.Column="1" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1">
+                  <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                      <Setter Property="Background" Value="Transparent" />
+                      <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                          <Setter Property="Background" Value="{StaticResource AdvancedClipboard.Brushes.DeleteButton}" />
+                        </Trigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Button.Style>
+                </Button>
+              </Grid>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
     </ScrollViewer>
-    <Button Content="" 
-            Width="48" 
-            Height="48" 
-            Style="{DynamicResource MahApps.Styles.Button.Circle}" 
-            Background="{DynamicResource MahApps.Brushes.AccentBase}" 
-            FontFamily="Segoe MDL2 Assets" 
-            FontSize="24" 
-            VerticalAlignment="Bottom"
-            HorizontalAlignment="Right"
+    <StackPanel VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+      <Button Content=""
+            Width="48"
+            Height="48"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}"
+            Background="{DynamicResource MahApps.Brushes.AccentBase}"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="24"
             Margin="5"
             Opacity="1"
-            Command="{Binding RefreshCommand}"/>
+            Command="{Binding AddCommand}" />
+      <Button Content=""
+            Width="48"
+            Height="48"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}"
+            Background="{DynamicResource MahApps.Brushes.AccentBase}"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="24"
+            Margin="5"
+            Opacity="1"
+            Command="{Binding RefreshCommand}" />
+    </StackPanel>
   </Grid>
 </UserControl>

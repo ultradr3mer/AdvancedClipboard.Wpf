@@ -3,11 +3,7 @@ using AdvancedClipboard.Wpf.Data;
 using AdvancedClipboard.Wpf.Services;
 using Prism.Commands;
 using System;
-using System.Drawing;
-using System.IO;
-using System.Net;
-using System.Windows;
-using System.Windows.Media.Imaging;
+using System.Windows.Input;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
@@ -24,6 +20,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public HistoryPageEntryViewModel(ClipboardService clipboardService)
     {
       this.LoadIntoClipboardCommand = new DelegateCommand(this.LoadIntoClipboardCommandExecute);
+      this.DeleteCommand = new DelegateCommand(this.DeleteCommandExecute);
+
       this.clipboardService = clipboardService;
     }
 
@@ -31,11 +29,15 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Properties
 
+    public ICommand DeleteCommand { get; }
+
     public Uri ImageUrl { get; private set; }
 
-    public DelegateCommand LoadIntoClipboardCommand { get; }
+    public ICommand LoadIntoClipboardCommand { get; }
 
     public string TextContent { get; set; }
+
+    public Guid Id { get; set; }
 
     #endregion Properties
 
@@ -46,20 +48,14 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.ImageUrl = SimpleFileTokenData.CreateUrl(data.ImageContentUrl);
     }
 
+    private async void DeleteCommandExecute()
+    {
+      await this.clipboardService.Delete(this.Id);
+    }
+
     private void LoadIntoClipboardCommandExecute()
     {
-      if (ImageUrl != null)
-      {
-        WebRequest request = WebRequest.Create(ImageUrl);
-        WebResponse response = request.GetResponse();
-        Stream responseStream = response.GetResponseStream();
-        var bi = BitmapFrame.Create(responseStream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-        bi.DownloadCompleted += (o, a) => Clipboard.SetImage(bi);
-      }
-      else if (!string.IsNullOrEmpty(TextContent))
-      {
-        Clipboard.SetText(TextContent);
-      }
+      this.clipboardService.SendToClipboard(this.WriteToDataModel());
     }
 
     #endregion Methods

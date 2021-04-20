@@ -1,6 +1,8 @@
-﻿using AdvancedClipboard.Wpf.Data;
+﻿using AdvancedClipboard.Wpf.Constants;
+using AdvancedClipboard.Wpf.Data;
 using Prism.Events;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -17,8 +19,7 @@ namespace AdvancedClipboard.Wpf.Services
     #region Fields
 
     private readonly Client client;
-    private string lastImageMd5;
-    private string lastText;
+    private readonly string tempPath;
 
     #endregion Fields
 
@@ -27,6 +28,8 @@ namespace AdvancedClipboard.Wpf.Services
     public ClipboardService(Client client)
     {
       this.client = client;
+
+      this.tempPath = Path.Combine(Path.GetTempPath(), "AdvancedClipboard");
     }
 
     #endregion Constructors
@@ -44,17 +47,30 @@ namespace AdvancedClipboard.Wpf.Services
     {
       string textContent;
       BitmapSource imageContent;
+      IDataObject data = Clipboard.GetDataObject();
+      if (data.GetDataPresent(DataFormats.FileDrop))
+      {
+        var files = (string[])data.GetData(DataFormats.FileDrop);
+        this.PostFilesAsync(files);
+      }
       if (!string.IsNullOrEmpty(textContent = Clipboard.GetText()))
       {
-        if (textContent != this.lastText)
-        {
-          this.lastText = textContent;
-          this.PostPlaintextAsync(textContent);
-        }
+        this.PostPlaintextAsync(textContent);
       }
       else if ((imageContent = Clipboard.GetImage()) != null)
       {
         this.PostImageAsync(imageContent);
+      }
+    }
+
+    private async void PostFilesAsync(string[] files)
+    {
+      foreach (var file in files)
+      {
+        var fileName = Path.GetFileName(file);
+        using var stream = File.OpenRead(file);
+        var result = await this.client.ClipboardPostnamedfileAsync(fileName, new FileParameter(stream));
+        this.ClipboardItems.Insert(0, result);
       }
     }
 
@@ -74,22 +90,38 @@ namespace AdvancedClipboard.Wpf.Services
       foreach (var item in data)
       {
         this.ClipboardItems.Insert(0, item);
-        this.lastText = item.TextContent;
       }
     }
 
-    internal void SendToClipboard(ClipboardGetData clipboardGetData)
+    internal async void SendToClipboard(ClipboardGetData clipboardGetData)
     {
-      if (clipboardGetData.ImageContentUrl != null)
+      if (clipboardGetData.ContentTypeId == ContentTypes.Image)
       {
-        var url = SimpleFileTokenData.CreateUrl(clipboardGetData.ImageContentUrl);
+        var url = SimpleFileTokenData.CreateUrl(clipboardGetData.FileContentUrl);
         WebRequest request = WebRequest.Create(url);
-        WebResponse response = request.GetResponse();
-        Stream responseStream = response.GetResponseStream();
+        using WebResponse response = request.GetResponse();
+        using Stream responseStream = response.GetResponseStream();
         var bi = BitmapFrame.Create(responseStream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
         bi.DownloadCompleted += (o, a) => Clipboard.SetImage(bi);
       }
-      else if (!string.IsNullOrEmpty(clipboardGetData.TextContent))
+      if (clipboardGetData.ContentTypeId == ContentTypes.File)
+      {
+        if (!Directory.Exists(this.tempPath))
+        {
+          Directory.CreateDirectory(this.tempPath);
+        }
+
+        var url = SimpleFileTokenData.CreateUrl(clipboardGetData.FileContentUrl);
+        using (var client = new WebClient())
+        {
+          string path = Path.Combine(this.tempPath, clipboardGetData.FileName);
+          await client.DownloadFileTaskAsync(url, path);
+          StringCollection paths = new StringCollection();
+          paths.Add(path);
+          Clipboard.SetFileDropList(paths);
+        }
+      }
+      else if (clipboardGetData.ContentTypeId == ContentTypes.PlainText)
       {
         Clipboard.SetText(clipboardGetData.TextContent);
       }
@@ -104,16 +136,10 @@ namespace AdvancedClipboard.Wpf.Services
       encoder.Save(memoryStream);
       memoryStream.Seek(0, SeekOrigin.Begin);
 
-      var md5 = MD5.Create();
-      var currentImageMd5 = Convert.ToBase64String(md5.ComputeHash(memoryStream));
       memoryStream.Seek(0, SeekOrigin.Begin);
 
-      if (this.lastImageMd5 != currentImageMd5)
-      {
-        this.lastImageMd5 = currentImageMd5;
-        var result = await this.client.ClipboardPostimageAsync(".png", new FileParameter(memoryStream));
-        this.ClipboardItems.Insert(0, result);
-      }
+      var result = await this.client.ClipboardPostfileAsync(".png", new FileParameter(memoryStream));
+      this.ClipboardItems.Insert(0, result);
     }
 
     private async void PostPlaintextAsync(string textContent)

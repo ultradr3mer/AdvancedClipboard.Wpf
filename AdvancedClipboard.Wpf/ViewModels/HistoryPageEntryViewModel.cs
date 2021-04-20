@@ -1,8 +1,10 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
+using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Data;
 using AdvancedClipboard.Wpf.Services;
 using Prism.Commands;
 using System;
+using System.IO;
 using System.Windows.Input;
 
 namespace AdvancedClipboard.Wpf.ViewModels
@@ -31,7 +33,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public ICommand DeleteCommand { get; }
 
-    public Uri ImageUrl { get; private set; }
+    public Uri ImageUrl { get; set; }
 
     public ICommand LoadIntoClipboardCommand { get; }
 
@@ -39,13 +41,24 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public Guid Id { get; set; }
 
+    public Uri FileContentUrl { get; set; }
+
+    public string FileName { get; set; }
+
     #endregion Properties
 
     #region Methods
 
     protected override void OnReadingDataModel(ClipboardGetData data)
     {
-      this.ImageUrl = SimpleFileTokenData.CreateUrl(data.ImageContentUrl);
+      if (data.ContentTypeId == ContentTypes.Image)
+      {
+        this.ImageUrl = SimpleFileTokenData.CreateUrl(data.FileContentUrl);
+      }
+      else if(data.ContentTypeId == ContentTypes.File)
+      {
+        this.FileContentUrl = SimpleFileTokenData.CreateUrl(data.FileContentUrl);
+      }
     }
 
     private async void DeleteCommandExecute()

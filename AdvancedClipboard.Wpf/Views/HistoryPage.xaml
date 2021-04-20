@@ -17,7 +17,7 @@
       <comp:UriNullVisibilityConverter x:Key="UriNullVisibilityConverter" />
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid>
+  <Grid Margin="0">
     <ScrollViewer>
       <ItemsControl ItemsSource="{Binding Entrys}">
         <ItemsControl.ItemTemplate>
@@ -29,7 +29,7 @@
           </Border>-->
             <Button Margin="3"
                   Command="{Binding LoadIntoClipboardCommand}"
-                  HorizontalContentAlignment="Stretch">
+                  HorizontalContentAlignment="Stretch" BorderBrush="Black">
               <Button.Style>
 
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
@@ -40,11 +40,15 @@
               </Button.Style>
               <Grid>
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto" />
                   <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label Content="{Binding TextContent}" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
-                <Image Source="{Binding ImageUrl}" Height="100" Visibility="{Binding ImageUrl, Converter={StaticResource UriNullVisibilityConverter}}" />
+                <TextBlock Text="{Binding TextContent}" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" TextWrapping="Wrap" />
+                <Image Source="{Binding ImageUrl}" Height="200" Visibility="{Binding ImageUrl, Converter={StaticResource UriNullVisibilityConverter}}" HorizontalAlignment="Left" />
+                <StackPanel Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}" HorizontalAlignment="Left">
+                  <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="64" HorizontalAlignment="Center" Opacity="0.5" />
+                  <TextBlock Text="{Binding FileName}" TextWrapping="Wrap" />
+                </StackPanel>
                 <Button Command="{Binding DeleteCommand}" Grid.Column="1" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1">
                   <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
@@ -65,7 +69,7 @@
     </ScrollViewer>
     <StackPanel VerticalAlignment="Bottom"
                 HorizontalAlignment="Right"
-                Orientation="Horizontal">
+                Orientation="Horizontal" Margin="0,0,16,0">
       <Button Content=""
             Width="48"
             Height="48"

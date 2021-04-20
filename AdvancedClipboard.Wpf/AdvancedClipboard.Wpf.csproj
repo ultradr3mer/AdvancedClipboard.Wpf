@@ -37,6 +37,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>clipboardicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
     <Reference Include="ManagedWinapi, Version=0.3.0.3, Culture=neutral, processorArchitecture=MSIL">
@@ -101,6 +104,7 @@
     <Compile Include="Composite\ObjectNullBoolConverter.cs" />
     <Compile Include="Composite\UriNullVisibilityConverter.cs" />
     <Compile Include="Composite\StringNullOrEmptyVisibilityConverter.cs" />
+    <Compile Include="Constants\ContentTypes.cs" />
     <Compile Include="Data\SimpleFileTokenData.cs" />
     <Compile Include="Events\CredentialsChangedEvent.cs" />
     <Compile Include="Extensions\BaseViewModelExtensions.cs" />
@@ -173,7 +177,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="clipboardicon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.3.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.3.0\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

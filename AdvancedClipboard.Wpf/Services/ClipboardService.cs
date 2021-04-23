@@ -30,6 +30,18 @@ namespace AdvancedClipboard.Wpf.Services
       this.client = client;
 
       this.tempPath = Path.Combine(Path.GetTempPath(), "AdvancedClipboard");
+
+      if (!Directory.Exists(this.tempPath))
+      {
+        Directory.CreateDirectory(this.tempPath);
+      }
+      else
+      {
+        foreach (var file in Directory.EnumerateFiles(this.tempPath))
+        {
+          File.Delete(file);
+        }
+      }
     }
 
     #endregion Constructors
@@ -98,19 +110,19 @@ namespace AdvancedClipboard.Wpf.Services
       if (clipboardGetData.ContentTypeId == ContentTypes.Image)
       {
         var url = SimpleFileTokenData.CreateUrl(clipboardGetData.FileContentUrl);
-        WebRequest request = WebRequest.Create(url);
-        using WebResponse response = request.GetResponse();
-        using Stream responseStream = response.GetResponseStream();
-        var bi = BitmapFrame.Create(responseStream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-        bi.DownloadCompleted += (o, a) => Clipboard.SetImage(bi);
+        var path = Path.Combine(this.tempPath, Path.GetFileName(clipboardGetData.FileContentUrl));
+
+        using (WebClient client = new WebClient())
+        {
+          client.DownloadFileAsync(url, path);
+        }
+
+        var bs = new BitmapImage(new Uri(path));
+        Clipboard.SetImage(bs);
+
       }
       if (clipboardGetData.ContentTypeId == ContentTypes.File)
       {
-        if (!Directory.Exists(this.tempPath))
-        {
-          Directory.CreateDirectory(this.tempPath);
-        }
-
         var url = SimpleFileTokenData.CreateUrl(clipboardGetData.FileContentUrl);
         using (var client = new WebClient())
         {

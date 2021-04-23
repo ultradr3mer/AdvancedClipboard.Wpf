@@ -29,13 +29,14 @@
           </Border>-->
             <Button Margin="3"
                   Command="{Binding LoadIntoClipboardCommand}"
-                  HorizontalContentAlignment="Stretch" BorderBrush="Black">
+                  HorizontalContentAlignment="Stretch">
               <Button.Style>
 
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                   <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
                   <Setter Property="FontWeight" Value="Normal" />
                   <Setter Property="FontSize" Value="14" />
+                  <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray10}" />
                 </Style>
               </Button.Style>
               <Grid>

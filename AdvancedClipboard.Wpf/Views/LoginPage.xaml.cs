@@ -14,8 +14,8 @@ namespace AdvancedClipboard.Wpf.Views
     #region Fields
 
     private readonly Client client;
-    private readonly IRegionManager regionManager;
     private readonly ClipboardService clipboardService;
+    private readonly IRegionManager regionManager;
     private readonly SettingsService settingsService;
 
     #endregion Fields
@@ -32,13 +32,18 @@ namespace AdvancedClipboard.Wpf.Views
       this.clipboardService = clipboardService;
       this.username.Text = settingsService.UserName;
       this.password.Password = settingsService.UserPassword;
+
+      if (!string.IsNullOrEmpty(this.username.Text) && !string.IsNullOrEmpty(this.password.Password))
+      {
+        Login();
+      }
     }
 
     #endregion Constructors
 
     #region Methods
 
-    private async void LoginClick(object sender, RoutedEventArgs e)
+    private async void Login()
     {
       try
       {
@@ -58,6 +63,11 @@ namespace AdvancedClipboard.Wpf.Views
         this.message.Text = ex.Message;
         this.message.Visibility = Visibility.Visible;
       }
+    }
+
+    private void LoginClick(object sender, RoutedEventArgs e)
+    {
+      Login();
     }
 
     #endregion Methods

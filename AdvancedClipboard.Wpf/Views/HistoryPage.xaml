@@ -29,14 +29,13 @@
           </Border>-->
             <Button Margin="3"
                   Command="{Binding LoadIntoClipboardCommand}"
-                  HorizontalContentAlignment="Stretch">
+                  HorizontalContentAlignment="Stretch" Background="#CC2F2F2F">
               <Button.Style>
-
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                   <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
                   <Setter Property="FontWeight" Value="Normal" />
                   <Setter Property="FontSize" Value="14" />
-                  <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray10}" />
+                  <Setter Property="BorderBrush" Value="#7F2F2F2F" />
                 </Style>
               </Button.Style>
               <Grid>
@@ -52,7 +51,7 @@
                 </StackPanel>
                 <Button Command="{Binding DeleteCommand}" Grid.Column="1" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1">
                   <Button.Style>
-                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.CircleNoBorder}">
                       <Setter Property="Background" Value="Transparent" />
                       <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -68,29 +67,51 @@
         </ItemsControl.ItemTemplate>
       </ItemsControl>
     </ScrollViewer>
-    <StackPanel VerticalAlignment="Bottom"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal" Margin="0,0,16,0">
-      <Button Content=""
+    <StackPanel VerticalAlignment="Bottom" Margin="0,0,16,0">
+      <StackPanel HorizontalAlignment="Right"
+                Orientation="Horizontal">
+        <ToggleButton Content="{Binding OpenCloseTextInputContent}"
             Width="48"
             Height="48"
-            Style="{DynamicResource MahApps.Styles.Button.Circle}"
+            Style="{DynamicResource MahApps.Styles.ToggleButton.CircleNoBorder}"
+            Background="{DynamicResource MahApps.Brushes.AccentBase}"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="24"
+            Margin="5"
+            Opacity="1"
+            Command="{Binding Path=OpenCloseTextInputCommand}"
+            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+        <Button Content=""
+            Width="48"
+            Height="48"
+            Style="{DynamicResource MahApps.Styles.Button.CircleNoBorder}"
             Background="{DynamicResource MahApps.Brushes.AccentBase}"
             FontFamily="Segoe MDL2 Assets"
             FontSize="24"
             Margin="5"
             Opacity="1"
             Command="{Binding AddCommand}" />
-      <Button Content=""
+        <Button Content=""
             Width="48"
             Height="48"
-            Style="{DynamicResource MahApps.Styles.Button.Circle}"
+            Style="{DynamicResource MahApps.Styles.Button.CircleNoBorder}"
             Background="{DynamicResource MahApps.Brushes.AccentBase}"
             FontFamily="Segoe MDL2 Assets"
             FontSize="24"
             Margin="5"
             Opacity="1"
             Command="{Binding RefreshCommand}" />
+      </StackPanel>
+      <Border Margin="5" Background="{DynamicResource MahApps.Brushes.Gray2}" CornerRadius="5" Visibility="{Binding InputBoxVisibility}">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <TextBox Text="{Binding Path=TextInput,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="4" AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" />
+          <Button Command="{Binding AddTextInputCommand}" Margin="4" Content="" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="24" BorderBrush="{DynamicResource MahApps.Brushes.Gray10}" />
+        </Grid>
+      </Border>
     </StackPanel>
   </Grid>
 </UserControl>

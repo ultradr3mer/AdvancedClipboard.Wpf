@@ -2,10 +2,10 @@
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
 using Prism.Commands;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Unity;
 
@@ -15,6 +15,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
   {
     #region Fields
 
+    private const string ClosTextInputIcon = "";
+    private const string OpenTextInputIcon = "";
     private readonly IUnityContainer container;
     private readonly ClipboardService service;
 
@@ -29,8 +31,14 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
       this.RefreshCommand = new DelegateCommand(this.RefreshCommandExecute);
       this.AddCommand = new DelegateCommand(this.AddCommandExecute);
+      this.OpenCloseTextInputCommand = new DelegateCommand<bool?>(this.OpenCloseTextInputCommandExecute);
+      this.AddTextInputCommand = new DelegateCommand(this.AddTextInputCommandExecute, this.AddTextInputCommandCanExecute);
 
       this.Load();
+
+      this.OpenCloseTextInputContent = OpenTextInputIcon;
+
+      this.PropertyChanged += this.HistoryPageViewModel_PropertyChanged;
     }
 
     #endregion Constructors
@@ -39,9 +47,21 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public ICommand AddCommand { get; }
 
+    public DelegateCommand AddTextInputCommand { get; }
+
+    public bool CanAddTextInput { get; set; }
+
     public BindingList<HistoryPageEntryViewModel> Entrys { get; set; }
 
+    public Visibility InputBoxVisibility { get; set; }
+
+    public ICommand OpenCloseTextInputCommand { get; }
+
+    public string OpenCloseTextInputContent { get; set; }
+
     public ICommand RefreshCommand { get; }
+
+    public string TextInput { get; set; }
 
     #endregion Properties
 
@@ -49,6 +69,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     protected virtual void Load()
     {
+      this.InputBoxVisibility = Visibility.Collapsed;
       this.service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
       this.Entrys = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
     }
@@ -56,6 +77,17 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private void AddCommandExecute()
     {
       this.service.AddClipboardContent();
+    }
+
+    private bool AddTextInputCommandCanExecute()
+    {
+      return !string.IsNullOrWhiteSpace(this.TextInput);
+    }
+
+    private void AddTextInputCommandExecute()
+    {
+      this.service.AddClipboardContent(this.TextInput);
+      this.TextInput = string.Empty;
     }
 
     private void ClipboardItemsListChanged(object sender, ListChangedEventArgs e)
@@ -68,9 +100,31 @@ namespace AdvancedClipboard.Wpf.ViewModels
         HistoryPageEntryViewModel newEntry = this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(addedData);
         this.Entrys.Insert(e.NewIndex, newEntry);
       }
-      else if(e.ListChangedType == ListChangedType.ItemDeleted)
+      else if (e.ListChangedType == ListChangedType.ItemDeleted)
       {
         this.Entrys.RemoveAt(e.NewIndex);
+      }
+    }
+
+    private void HistoryPageViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName == nameof(TextInput))
+      {
+        this.AddTextInputCommand.RaiseCanExecuteChanged();
+      }
+    }
+
+    private void OpenCloseTextInputCommandExecute(bool? isChecked)
+    {
+      if (isChecked == true)
+      {
+        this.InputBoxVisibility = Visibility.Visible;
+        this.OpenCloseTextInputContent = ClosTextInputIcon;
+      }
+      else
+      {
+        this.InputBoxVisibility = Visibility.Collapsed;
+        this.OpenCloseTextInputContent = OpenTextInputIcon;
       }
     }
 

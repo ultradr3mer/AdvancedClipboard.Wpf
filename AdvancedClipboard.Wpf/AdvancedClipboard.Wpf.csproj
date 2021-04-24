@@ -113,6 +113,7 @@
     <Compile Include="Extensions\TimespanExtension.cs" />
     <Compile Include="Services\Client.cs" />
     <Compile Include="Services\Client.Generated.cs" />
+    <Compile Include="Interop\WindowBlur.cs" />
     <Page Include="ResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

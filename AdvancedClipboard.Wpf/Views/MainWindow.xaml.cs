@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using AdvancedClipboard.Wpf.Interop;
+using MahApps.Metro.Controls;
 using ManagedWinapi;
 using Prism.Regions;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ namespace AdvancedClipboard.Wpf.Views
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
-  public partial class MainWindow : MetroWindow
+  public partial class MainWindow : Window
   {
     private const string RegionName = "MainRegion";
     #region Fields
@@ -30,6 +31,8 @@ namespace AdvancedClipboard.Wpf.Views
 
       regionManager.RegisterViewWithRegion(RegionName, () => container.Resolve<LoginPage>());
       regionManager.RegisterViewWithRegion(RegionName, () => container.Resolve<HistoryPage>());
+
+      WindowBlur.SetIsEnabled(this, true);
     }
 
     #endregion Constructors

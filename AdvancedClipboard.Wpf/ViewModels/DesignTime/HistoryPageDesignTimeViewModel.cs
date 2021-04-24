@@ -3,6 +3,7 @@ using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
 using System;
 using System.ComponentModel;
+using System.Windows;
 
 namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 {
@@ -47,6 +48,7 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 
     protected override void Load()
     {
+      this.InputBoxVisibility = Visibility.Visible;
     }
 
     #endregion Methods

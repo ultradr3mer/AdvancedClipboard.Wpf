@@ -54,6 +54,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       if (data.ContentTypeId == ContentTypes.Image)
       {
         this.ImageUrl = SimpleFileTokenData.CreateUrl(data.FileContentUrl);
+        this.FileName = string.Empty;
       }
       else if(data.ContentTypeId == ContentTypes.File)
       {

@@ -1,13 +1,11 @@
 ﻿using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Data;
-using Prism.Events;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -75,17 +73,6 @@ namespace AdvancedClipboard.Wpf.Services
       }
     }
 
-    private async void PostFilesAsync(string[] files)
-    {
-      foreach (var file in files)
-      {
-        var fileName = Path.GetFileName(file);
-        using var stream = File.OpenRead(file);
-        var result = await this.client.ClipboardPostnamedfileAsync(fileName, new FileParameter(stream));
-        this.ClipboardItems.Insert(0, result);
-      }
-    }
-
     public async Task Delete(Guid id)
     {
       await this.client.ClipboardDeleteAsync(id);
@@ -105,21 +92,25 @@ namespace AdvancedClipboard.Wpf.Services
       }
     }
 
+    internal void AddClipboardContent(string textInput)
+    {
+      this.PostPlaintextAsync(textInput);
+    }
+
     internal async void SendToClipboard(ClipboardGetData clipboardGetData)
     {
       if (clipboardGetData.ContentTypeId == ContentTypes.Image)
       {
         var url = SimpleFileTokenData.CreateUrl(clipboardGetData.FileContentUrl);
-        var path = Path.Combine(this.tempPath, Path.GetFileName(clipboardGetData.FileContentUrl));
+        var path = Path.Combine(this.tempPath, Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + Path.GetExtension(clipboardGetData.FileContentUrl));
 
         using (WebClient client = new WebClient())
         {
-          client.DownloadFileAsync(url, path);
+          await client.DownloadFileTaskAsync(url, path);
         }
 
         var bs = new BitmapImage(new Uri(path));
         Clipboard.SetImage(bs);
-
       }
       if (clipboardGetData.ContentTypeId == ContentTypes.File)
       {
@@ -136,6 +127,17 @@ namespace AdvancedClipboard.Wpf.Services
       else if (clipboardGetData.ContentTypeId == ContentTypes.PlainText)
       {
         Clipboard.SetText(clipboardGetData.TextContent);
+      }
+    }
+
+    private async void PostFilesAsync(string[] files)
+    {
+      foreach (var file in files)
+      {
+        var fileName = Path.GetFileName(file);
+        using var stream = File.OpenRead(file);
+        var result = await this.client.ClipboardPostnamedfileAsync(fileName, new FileParameter(stream));
+        this.ClipboardItems.Insert(0, result);
       }
     }
 

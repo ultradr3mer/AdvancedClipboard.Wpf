@@ -47,7 +47,6 @@ namespace AdvancedClipboard.Wpf.Services
     #region Properties
 
     public BindingList<ClipboardGetData> ClipboardItems { get; } = new BindingList<ClipboardGetData>();
-    public bool IsWatchingClipboard { get; set; }
 
     #endregion Properties
 

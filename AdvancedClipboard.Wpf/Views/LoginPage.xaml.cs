@@ -47,19 +47,21 @@ namespace AdvancedClipboard.Wpf.Views
     {
       try
       {
+        this.ShowSingInScreen(true);
         this.message.Text = "Signing in...";
         this.message.Visibility = Visibility.Visible;
         this.settingsService.SetCredentials(this.username.Text, this.password.Password);
         await this.client.ClipboardAuthorizeAsync();
-        this.regionManager.RequestNavigate("MainRegion", new Uri(nameof(HistoryPage), UriKind.Relative));
         await this.clipboardService.Refresh();
-        this.clipboardService.IsWatchingClipboard = true;
+        this.regionManager.RequestNavigate("MainRegion", new Uri(nameof(HistoryPage), UriKind.Relative));
 
+        this.ShowSingInScreen(false);
         this.message.Text = string.Empty;
         this.message.Visibility = Visibility.Collapsed;
       }
       catch (Exception ex)
       {
+        this.ShowSingInScreen(false);
         this.message.Text = ex.Message;
         this.message.Visibility = Visibility.Visible;
       }
@@ -68,6 +70,12 @@ namespace AdvancedClipboard.Wpf.Views
     private void LoginClick(object sender, RoutedEventArgs e)
     {
       Login();
+    }
+
+    private void ShowSingInScreen(bool showSingInScreen)
+    {
+      this.LoadingStackPanel.Visibility = showSingInScreen ? Visibility.Visible : Visibility.Collapsed;
+      this.LoginStackPanel.Visibility = showSingInScreen ? Visibility.Collapsed : Visibility.Visible;
     }
 
     #endregion Methods

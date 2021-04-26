@@ -4,6 +4,32 @@
   <Color x:Key="AdvancedClipboard.Colors.DeleteButton">#d70c16</Color>
   <SolidColorBrush x:Key="AdvancedClipboard.Brushes.DeleteButton" Color="{StaticResource AdvancedClipboard.Colors.DeleteButton}" />
 
+  <Style x:Key="MahApps.Styles.Button.SquareClose" TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square}">
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Gray9}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{StaticResource AdvancedClipboard.Brushes.DeleteButton}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="MahApps.Styles.Button.SquareMinMax" TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square}">
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Gray9}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
   <!--  style for WP7/Circle button  -->
   <Style x:Key="MahApps.Styles.Button.CircleNoBorder" TargetType="{x:Type ButtonBase}">
     <Setter Property="Background" Value="Transparent" />
@@ -156,5 +182,4 @@
       </Trigger>
     </Style.Triggers>
   </Style>
-
 </ResourceDictionary>

@@ -5,20 +5,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         prism:ViewModelLocator.AutoWireViewModel="True"
-                 mc:Ignorable="d"
-                 Title="Advanced Clipboard" Height="800" Width="450" Loaded="MetroWindowLoaded" Closing="MetroWindowClosing" Icon="/AdvancedClipboard.Wpf;component/clipboardicon.ico" Background="Transparent">
+        mc:Ignorable="d"
+        Title="Advanced Clipboard" 
+        WindowStyle="None" 
+        Height="800" 
+        Width="450" 
+        Loaded="MetroWindowLoaded" 
+        Closing="MetroWindowClosing" 
+        Icon="/AdvancedClipboard.Wpf;component/clipboardicon.ico" 
+        Background="Transparent"
+        SizeChanged="WindowSizeChanged">
   <WindowChrome.WindowChrome>
-    <WindowChrome GlassFrameThickness="-1" />
+    <WindowChrome GlassFrameThickness="-1" CaptionHeight="0" />
   </WindowChrome.WindowChrome>
-  <Grid Background="#99535353">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="32" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
-    <Label Content="Advanced Clipboard" Margin="3"/>
-    <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion" />
+  <Grid Background="#99535353" MouseDown="GridMouseDown">
+    <Grid x:Name="ContentGrid" Margin="15">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="32" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+        <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="16" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+        <Label Content="Advanced Clipboard" VerticalAlignment="Center"/>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareMinMax}" Click="MinimizeClick" />
+        <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareMinMax}" Click="MaximizeClick" />
+        <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareClose}" Click="CloseClick" />
+      </StackPanel>
+      <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion" />
+    </Grid>
   </Grid>
-  <!--<Grid>
-    <ContentControl prism:RegionManager.RegionName="MainRegion" />
-  </Grid>-->
 </Window>

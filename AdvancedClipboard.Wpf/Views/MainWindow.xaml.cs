@@ -1,9 +1,12 @@
 ﻿using AdvancedClipboard.Wpf.Interop;
-using MahApps.Metro.Controls;
 using ManagedWinapi;
 using Prism.Regions;
+using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.Views
@@ -13,9 +16,12 @@ namespace AdvancedClipboard.Wpf.Views
   /// </summary>
   public partial class MainWindow : Window
   {
-    private const string RegionName = "MainRegion";
     #region Fields
 
+    private const int GWL_STYLE = -16;
+    private const string RegionName = "MainRegion";
+
+    private const int WS_SYSMENU = 0x80000;
     private IUnityContainer container;
     private ClipboardNotifier notifier;
 
@@ -39,6 +45,37 @@ namespace AdvancedClipboard.Wpf.Views
 
     #region Methods
 
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+    [DllImport("user32.dll")]
+    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+    private void CloseClick(object sender, RoutedEventArgs e)
+    {
+      this.Close();
+    }
+
+    private void GridMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+      if (e.ChangedButton == MouseButton.Left)
+      {
+        this.DragMove();
+      }
+    }
+
+    private void MaximizeClick(object sender, RoutedEventArgs e)
+    {
+      if (this.WindowState == System.Windows.WindowState.Normal)
+      {
+        this.WindowState = System.Windows.WindowState.Maximized;
+      }
+      else
+      {
+        this.WindowState = System.Windows.WindowState.Normal;
+      }
+    }
+
     private void MetroWindowClosing(object sender, CancelEventArgs e)
     {
       this.notifier.Dispose();
@@ -47,6 +84,19 @@ namespace AdvancedClipboard.Wpf.Views
     private void MetroWindowLoaded(object sender, RoutedEventArgs e)
     {
       this.notifier = this.container.Resolve<ClipboardNotifier>();
+
+      var hwnd = new WindowInteropHelper(this).Handle;
+      SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
+    }
+
+    private void MinimizeClick(object sender, RoutedEventArgs e)
+    {
+      this.WindowState = WindowState.Minimized;
+    }
+
+    private void WindowSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+      this.ContentGrid.Margin = new Thickness((this.WindowState == WindowState.Maximized) ? 5 : 0);
     }
 
     #endregion Methods

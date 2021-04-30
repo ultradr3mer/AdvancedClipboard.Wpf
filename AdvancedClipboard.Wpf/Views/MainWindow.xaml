@@ -19,7 +19,7 @@
     <WindowChrome GlassFrameThickness="-1" CaptionHeight="0" />
   </WindowChrome.WindowChrome>
   <Grid Background="#99535353" MouseDown="GridMouseDown">
-    <Grid x:Name="ContentGrid" Margin="15">
+    <Grid x:Name="ContentGrid" Margin="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="32" />
         <RowDefinition Height="*" />
@@ -29,9 +29,9 @@
         <Label Content="Advanced Clipboard" VerticalAlignment="Center"/>
       </StackPanel>
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareMinMax}" Click="MinimizeClick" />
-        <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareMinMax}" Click="MaximizeClick" />
-        <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareClose}" Click="CloseClick" />
+        <Button TextOptions.TextFormattingMode="Display" Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareMinMax}" Click="MinimizeClick" />
+        <Button TextOptions.TextFormattingMode="Display" Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareMinMax}" Click="MaximizeClick" />
+        <Button TextOptions.TextFormattingMode="Display" Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Width="46" Height="32" Style="{DynamicResource MahApps.Styles.Button.SquareClose}" Click="CloseClick" />
       </StackPanel>
       <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion" />
     </Grid>

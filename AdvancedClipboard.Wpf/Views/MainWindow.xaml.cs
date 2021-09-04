@@ -37,6 +37,7 @@ namespace AdvancedClipboard.Wpf.Views
       regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<LoginPage>());
       regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<HistoryPage>());
       regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<LanePage>());
+      regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<EditPage>());
 
       WindowBlur.SetIsEnabled(this, true);
     }

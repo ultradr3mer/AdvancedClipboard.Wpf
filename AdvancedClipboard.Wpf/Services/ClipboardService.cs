@@ -91,6 +91,22 @@ namespace AdvancedClipboard.Wpf.Services
       }
     }
 
+    public async Task RefreshSafe()
+    {
+      await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
+        this.ClipboardItems.Clear();
+      }));
+
+      var data = await client.ClipboardGetAsync();
+
+      await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
+        foreach (var item in data)
+        {
+          this.ClipboardItems.Insert(0, item);
+        }
+      }));
+    }
+
     internal void AddClipboardContent(string textInput)
     {
       this.PostPlaintextAsync(textInput);

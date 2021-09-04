@@ -116,6 +116,14 @@ namespace AdvancedClipboard.Wpf.ViewModels
       {
         this.Entries.RemoveAt(e.NewIndex);
       }
+      else if(e.ListChangedType == ListChangedType.Reset)
+      {
+        if(listSender.Count == 0)
+        {
+          this.Entries = new BindingList<HistoryPageEntryViewModel>();
+        }
+        //this.Entries = new BindingList<HistoryPageEntryViewModel>(listSender.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
+      }
     }
 
     private void HistoryPageViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -123,6 +123,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EditPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\HistoryPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -145,8 +149,10 @@
     </Compile>
     <Compile Include="Services\ClipboardService.cs" />
     <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="ViewModels\DesignTime\EntriesDesignTimeViewModel.cs" />
     <Compile Include="ViewModels\DesignTime\HistoryPageDesignTimeViewModel.cs" />
     <Compile Include="ViewModels\DesignTime\LanePageDesignTimeViewModel.cs" />
+    <Compile Include="ViewModels\EditPageViewModel.cs" />
     <Compile Include="ViewModels\HistoryPageEntryViewModel.cs" />
     <Compile Include="ViewModels\HistoryPageViewModel.cs" />
     <Compile Include="ViewModels\LanePageViewModel.cs" />
@@ -154,6 +160,9 @@
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\Controls\Entries.xaml.cs">
       <DependentUpon>Entries.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditPage.xaml.cs">
+      <DependentUpon>EditPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HistoryPage.xaml.cs">
       <DependentUpon>HistoryPage.xaml</DependentUpon>

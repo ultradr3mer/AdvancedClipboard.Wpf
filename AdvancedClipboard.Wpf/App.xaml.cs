@@ -34,6 +34,7 @@ namespace AdvancedClipboard.Wpf
       containerRegistry.RegisterSingleton<ClipboardNotifier>();
       containerRegistry.RegisterSingleton<Client>();
       containerRegistry.RegisterSingleton<ClipboardService>();
+      containerRegistry.RegisterSingleton<HistoryPageViewModel>();
 
       var container = this.Container.Resolve<IUnityContainer>();
       container.RegisterType<HttpClient, CustomHttpClient>();

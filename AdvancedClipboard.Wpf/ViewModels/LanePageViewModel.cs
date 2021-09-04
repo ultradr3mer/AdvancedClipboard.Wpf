@@ -74,16 +74,14 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
       this.SetDataModel(this.historyPageViewModel.Lanes.Single(o => o.Id == this.Id).WriteToDataModel());
 
-      Task.Run(this.Load);
+      this.Load();
     }
 
-    private async Task Load()
+    private async void Load()
     {
       var items = (await this.client.ClipboardGetlaneAsync(this.Id)).ToList();
 
-      await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
-        this.Entries = new BindingList<HistoryPageEntryViewModel>(items.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
-      }));
+      this.Entries = new BindingList<HistoryPageEntryViewModel>(items.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
     }
 
     protected override void OnReadingDataModel(LaneGetData data)

@@ -37,7 +37,7 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
     #region Methods
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    protected override async Task Load()
+    protected override async void Load()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
       this.InputBoxVisibility = Visibility.Visible;

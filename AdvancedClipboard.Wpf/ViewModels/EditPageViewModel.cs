@@ -95,12 +95,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.regionManager.RequestNavigate(App.RegionName, new Uri(nameof(HistoryPage), UriKind.Relative));
     }
 
-    private void SaveCommandExecute()
-    {
-      Task.Run(this.SaveCommandAsync);
-    }
-
-    private async Task SaveCommandAsync()
+    private async void SaveCommandExecute()
     {
       ClipboardPutData data = this.WriteToDataModel();
 
@@ -120,11 +115,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
       await this.client.ClipboardPutAsync(data);
 
-      await this.service.RefreshSafe();
+      await this.service.Refresh();
 
-      await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
-        this.regionManager.RequestNavigate(App.RegionName, new Uri(nameof(HistoryPage), UriKind.Relative));
-      }));
+      this.regionManager.RequestNavigate(App.RegionName, new Uri(nameof(HistoryPage), UriKind.Relative));
     }
 
     #endregion Methods

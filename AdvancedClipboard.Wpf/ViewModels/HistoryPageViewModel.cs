@@ -38,7 +38,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.OpenCloseTextInputCommand = new DelegateCommand<bool?>(this.OpenCloseTextInputCommandExecute);
       this.AddTextInputCommand = new DelegateCommand(this.AddTextInputCommandExecute, this.AddTextInputCommandCanExecute);
 
-      Task.Run(this.Load);
+      this.Load();
 
       this.OpenCloseTextInputContent = OpenTextInputIcon;
 
@@ -73,7 +73,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Methods
 
-    protected virtual async Task Load()
+    protected virtual async void Load()
     {
       this.InputBoxVisibility = Visibility.Collapsed;
       this.service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
@@ -81,9 +81,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
       var lanes = await this.client.LaneAsync();
 
-      await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
-        this.Lanes = new BindingList<LaneViewModel>(lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o)).ToList());
-      }));
+      this.Lanes = new BindingList<LaneViewModel>(lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o)).ToList());
     }
 
     private void AddCommandExecute()
@@ -122,7 +120,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
         {
           this.Entries = new BindingList<HistoryPageEntryViewModel>();
         }
-        //this.Entries = new BindingList<HistoryPageEntryViewModel>(listSender.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
       }
     }
 

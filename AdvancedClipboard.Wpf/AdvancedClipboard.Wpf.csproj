@@ -108,6 +108,7 @@
     <Compile Include="Data\SimpleFileTokenData.cs" />
     <Compile Include="Events\CredentialsChangedEvent.cs" />
     <Compile Include="Extensions\BaseViewModelExtensions.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\IListExtension.cs" />
     <Compile Include="Extensions\ObjectExtensionMethods.cs" />
     <Compile Include="Extensions\TimespanExtension.cs" />
@@ -118,7 +119,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\Entries.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\HistoryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LanePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -137,11 +146,20 @@
     <Compile Include="Services\ClipboardService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="ViewModels\DesignTime\HistoryPageDesignTimeViewModel.cs" />
+    <Compile Include="ViewModels\DesignTime\LanePageDesignTimeViewModel.cs" />
     <Compile Include="ViewModels\HistoryPageEntryViewModel.cs" />
     <Compile Include="ViewModels\HistoryPageViewModel.cs" />
+    <Compile Include="ViewModels\LanePageViewModel.cs" />
+    <Compile Include="ViewModels\LaneViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Views\Controls\Entries.xaml.cs">
+      <DependentUpon>Entries.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HistoryPage.xaml.cs">
       <DependentUpon>HistoryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LanePage.xaml.cs">
+      <DependentUpon>LanePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>

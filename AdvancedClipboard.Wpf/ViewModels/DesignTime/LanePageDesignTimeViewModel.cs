@@ -1,20 +1,15 @@
 ﻿using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
-using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
-using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 {
-  internal class HistoryPageDesignTimeViewModel : HistoryPageViewModel
+  internal class LanePageDesignTimeViewModel : LanePageViewModel
   {
     #region Constructors
 
-    public HistoryPageDesignTimeViewModel() : base(null, null, null)
+    public LanePageDesignTimeViewModel()
     {
       this.Entries = new BindingList<HistoryPageEntryViewModel>()
       {
@@ -29,19 +24,12 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
         this.CreateTextEntry("Der andere Text")
       };
 
-      this.Lanes = new BindingList<LaneViewModel>()
-      {
-        this.CreateLaneEntry("#FFDC143C", "Sql Abfragen"),
-        this.CreateLaneEntry("#FF9400D3", "Status notizen"),
-        this.CreateLaneEntry("#FF6495ED", "Helferlein"),
-        this.CreateLaneEntry("#FFFFFFFF", "White"),
-      };
+      this.SetDataModel(this.CreateLaneEntry("#FFDC143C", "Sql Abfragen"));
     }
 
-    private LaneViewModel CreateLaneEntry(string color, string name)
-    {
-      return new LaneViewModel(null).GetWithDataModel(new LaneGetData { Color = color, Name = name });
-    }
+    #endregion Constructors
+
+    #region Methods
 
     private HistoryPageEntryViewModel CreateFileEntry(string url, string fileName)
     {
@@ -53,20 +41,14 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
       return new HistoryPageEntryViewModel(null).GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.Image });
     }
 
+    private LaneGetData CreateLaneEntry(string color, string name)
+    {
+      return new LaneGetData { Color = color, Name = name };
+    }
+
     private HistoryPageEntryViewModel CreateTextEntry(string text)
     {
       return new HistoryPageEntryViewModel(null) { TextContent = text };
-    }
-
-    #endregion Constructors
-
-    #region Methods
-
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    protected override async Task Load()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-    {
-      this.InputBoxVisibility = Visibility.Visible;
     }
 
     #endregion Methods

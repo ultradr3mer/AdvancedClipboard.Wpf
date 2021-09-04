@@ -2,11 +2,14 @@
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
 using Prism.Commands;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
@@ -19,22 +22,23 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private const string OpenTextInputIcon = "";
     private readonly IUnityContainer container;
     private readonly ClipboardService service;
+    private readonly Client client;
 
     #endregion Fields
 
     #region Constructors
 
-    public HistoryPageViewModel(IUnityContainer container, ClipboardService service)
+    public HistoryPageViewModel(IUnityContainer container, ClipboardService service, Client client)
     {
       this.container = container;
       this.service = service;
-
+      this.client = client;
       this.RefreshCommand = new DelegateCommand(this.RefreshCommandExecute);
       this.AddCommand = new DelegateCommand(this.AddCommandExecute);
       this.OpenCloseTextInputCommand = new DelegateCommand<bool?>(this.OpenCloseTextInputCommandExecute);
       this.AddTextInputCommand = new DelegateCommand(this.AddTextInputCommandExecute, this.AddTextInputCommandCanExecute);
 
-      this.Load();
+      Task.Run(this.Load);
 
       this.OpenCloseTextInputContent = OpenTextInputIcon;
 
@@ -51,7 +55,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public bool CanAddTextInput { get; set; }
 
-    public BindingList<HistoryPageEntryViewModel> Entrys { get; set; }
+    public BindingList<HistoryPageEntryViewModel> Entries { get; set; }
+
+    public BindingList<LaneViewModel> Lanes { get; set; }
 
     public Visibility InputBoxVisibility { get; set; }
 
@@ -67,11 +73,17 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Methods
 
-    protected virtual void Load()
+    protected virtual async Task Load()
     {
       this.InputBoxVisibility = Visibility.Collapsed;
       this.service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
-      this.Entrys = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
+      this.Entries = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
+
+      var lanes = await this.client.LaneAsync();
+
+      await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
+        this.Lanes = new BindingList<LaneViewModel>(lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o)).ToList());
+      }));
     }
 
     private void AddCommandExecute()
@@ -98,11 +110,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
       {
         ClipboardGetData addedData = listSender[e.NewIndex];
         HistoryPageEntryViewModel newEntry = this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(addedData);
-        this.Entrys.Insert(e.NewIndex, newEntry);
+        this.Entries.Insert(e.NewIndex, newEntry);
       }
       else if (e.ListChangedType == ListChangedType.ItemDeleted)
       {
-        this.Entrys.RemoveAt(e.NewIndex);
+        this.Entries.RemoveAt(e.NewIndex);
       }
     }
 

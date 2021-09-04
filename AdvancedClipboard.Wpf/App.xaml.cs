@@ -14,6 +14,12 @@ namespace AdvancedClipboard.Wpf
   /// </summary>
   public partial class App
   {
+    #region Fields
+
+    public const string RegionName = "MainRegion";
+
+    #endregion Fields
+
     #region Methods
 
     protected override Window CreateShell()

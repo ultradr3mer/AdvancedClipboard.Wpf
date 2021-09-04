@@ -19,7 +19,6 @@ namespace AdvancedClipboard.Wpf.Views
     #region Fields
 
     private const int GWL_STYLE = -16;
-    private const string RegionName = "MainRegion";
 
     private const int WS_SYSMENU = 0x80000;
     private IUnityContainer container;
@@ -35,8 +34,9 @@ namespace AdvancedClipboard.Wpf.Views
 
       this.container = container;
 
-      regionManager.RegisterViewWithRegion(RegionName, () => container.Resolve<LoginPage>());
-      regionManager.RegisterViewWithRegion(RegionName, () => container.Resolve<HistoryPage>());
+      regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<LoginPage>());
+      regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<HistoryPage>());
+      regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<LanePage>());
 
       WindowBlur.SetIsEnabled(this, true);
     }

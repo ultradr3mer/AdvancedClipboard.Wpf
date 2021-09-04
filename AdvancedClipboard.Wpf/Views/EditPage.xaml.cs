@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdvancedClipboard.Wpf.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace AdvancedClipboard.Wpf.Views
     public EditPage()
     {
       InitializeComponent();
+    }
+
+    private void linkTextboxMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      ((EditPageViewModel)this.DataContext).OpenShareUrl.Execute(null);
     }
   }
 }

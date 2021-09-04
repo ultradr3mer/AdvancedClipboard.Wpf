@@ -84,14 +84,13 @@ namespace AdvancedClipboard.Wpf.Services
     public async Task Refresh()
     {
       this.Lanes.Clear();
-      var lanes = await this.client.LaneAsync();
+      this.ClipboardItems.Clear();
 
+      var lanes = await this.client.LaneAsync();
       foreach (var item in lanes)
       {
         this.Lanes.Add(item);
       }
-
-      this.ClipboardItems.Clear();
 
       var data = await client.ClipboardGetAsync();
       foreach (var item in data)

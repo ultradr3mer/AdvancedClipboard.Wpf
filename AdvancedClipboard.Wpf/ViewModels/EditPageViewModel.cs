@@ -1,5 +1,6 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Constants;
+using AdvancedClipboard.Wpf.Data;
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
 using AdvancedClipboard.Wpf.Views;
@@ -7,8 +8,8 @@ using Prism.Commands;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Unity;
@@ -20,12 +21,12 @@ namespace AdvancedClipboard.Wpf.ViewModels
     #region Fields
 
     internal const string EntryIdParmeter = "Id";
-    private readonly HistoryPageViewModel historyPageViewModel;
     private readonly Client client;
-    private readonly ClipboardService service;
     private readonly IUnityContainer container;
-    private readonly IRegionManager regionManager;
+    private readonly HistoryPageViewModel historyPageViewModel;
     private readonly LaneViewModel NoLane = new LaneViewModel(null) { Name = "None" };
+    private readonly IRegionManager regionManager;
+    private readonly ClipboardService service;
 
     #endregion Fields
 
@@ -35,6 +36,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
     {
       this.ReturnCommand = new DelegateCommand(this.ReturnCommandExecute);
       this.SaveCommand = new DelegateCommand(this.SaveCommandExecute);
+      this.OpenShareUrl = new DelegateCommand(this.OpenShareUrlExecute);
+      this.CopyShareUrl = new DelegateCommand(this.CopyShareUrlExecute);
       this.regionManager = regionManager;
       this.historyPageViewModel = historyPageViewModel;
       this.client = client;
@@ -46,13 +49,19 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Properties
 
+    public Guid ContentTypeId { get; set; }
+    public ICommand CopyShareUrl { get; }
     public Guid Id { get; set; }
+    public Uri ImageSource { get; set; }
     public List<LaneViewModel> Lanes { get; set; }
-    public LaneViewModel SelectedLane { get; set; }
+    public ICommand OpenShareUrl { get; }
     public ICommand ReturnCommand { get; }
     public ICommand SaveCommand { get; }
-    public string Text { get; set; }
-    public Guid ContentTypeId { get; set; }
+    public LaneViewModel SelectedLane { get; set; }
+    public string ShareUrl { get; set; }
+    public string TextContent { get; set; }
+    public string FileName { get; set; }
+    public Visibility FileIconVisibility { get; set; }
 
     #endregion Properties
 
@@ -80,18 +89,37 @@ namespace AdvancedClipboard.Wpf.ViewModels
     {
       if (data.ContentTypeId == ContentTypes.File)
       {
-        this.Text = data.FileName;
+        this.ImageSource = null;
+        this.FileName = data.FileName;
+        this.TextContent = null;
+        this.ShareUrl = SimpleFileTokenData.CreateUrl(data.FileContentUrl).AbsoluteUri;
       }
       else if (data.ContentTypeId == ContentTypes.PlainText)
       {
-        this.Text = data.TextContent;
+        this.ImageSource = null;
+        this.FileName = null;
+        this.TextContent = data.TextContent;
+        this.ShareUrl = null;
       }
-      else
+      else if (data.ContentTypeId == ContentTypes.Image)
       {
-        throw new NotImplementedException();
+        this.ImageSource = SimpleFileTokenData.CreateUrl(data.FileContentUrl);
+        this.FileName = null;
+        this.TextContent = null;
+        this.ShareUrl = this.ImageSource.AbsoluteUri;
       }
 
       this.SelectedLane = this.Lanes.FirstOrDefault(o => o.Id == data.LaneId) ?? this.Lanes.First();
+    }
+
+    private void CopyShareUrlExecute()
+    {
+      Clipboard.SetText(this.ShareUrl);
+    }
+
+    private void OpenShareUrlExecute()
+    {
+      Process.Start(ShareUrl);
     }
 
     private void ReturnCommandExecute()
@@ -103,13 +131,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
     {
       ClipboardPutData data = this.WriteToDataModel();
 
-      if (this.ContentTypeId == ContentTypes.File)
+      if (this.ContentTypeId == ContentTypes.PlainText)
       {
-        data.FileName = this.Text;
-      }
-      else if (this.ContentTypeId == ContentTypes.PlainText)
-      {
-        data.TextContent = this.Text;
+        data.TextContent = this.TextContent;
       }
 
       data.LaneId = this.SelectedLane != this.NoLane ? this.SelectedLane.Id : (Guid?)null;

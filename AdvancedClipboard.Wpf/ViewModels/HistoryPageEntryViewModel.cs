@@ -7,6 +7,7 @@ using Prism.Commands;
 using Prism.Regions;
 using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -52,6 +53,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public ICommand LoadIntoClipboardCommand { get; }
 
     public string TextContent { get; set; }
+
     public SolidColorBrush LaneColorBrush { get; internal set; }
 
     #endregion Properties
@@ -80,6 +82,14 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private async void DeleteCommandExecute()
     {
+      if(MessageBox.Show("Are you sure you want to delete this entry?",
+                         "Advanced Clipboard",
+                         MessageBoxButton.OKCancel,
+                         MessageBoxImage.Warning) != MessageBoxResult.OK)
+      {
+        return;
+      }
+
       await this.clipboardService.Delete(this.Id);
     }
 

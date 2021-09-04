@@ -1,5 +1,6 @@
 ﻿<UserControl x:Class="AdvancedClipboard.Wpf.Views.EditPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:comp="clr-namespace:AdvancedClipboard.Wpf.Composite"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,9 +9,16 @@
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <comp:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyBoolConverter" />
+      <comp:UriNullVisibilityConverter x:Key="UriNullVisibilityConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="50"/>
+      <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
@@ -19,8 +27,20 @@
       <Label Content="Edit Entry" FontSize="30" FontFamily="Calibri" VerticalAlignment="Center"/>
     </StackPanel>
     <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="24" Style="{StaticResource MahApps.Styles.Button.CircleNoBorder}" Margin="5" Command="{Binding SaveCommand}" Width="40" Height="40" HorizontalAlignment="Right"/>
-    <TextBox Margin="5" Text="{Binding Text}" Grid.Row="1"/>
-    <ComboBox Grid.Row="2" Margin="5" ItemsSource="{Binding Lanes}" SelectedItem="{Binding SelectedLane}">
+    <StackPanel Grid.Row="1">
+      <Grid Visibility="{Binding ShareUrl, Converter={StaticResource StringNullOrEmptyBoolConverter}}">
+        <TextBox Margin="5,5,30,5" TextDecorations="Underline" Text="{Binding ShareUrl}" Foreground="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" MouseDoubleClick="linkTextboxMouseDoubleClick" IsReadOnly="True" />
+        <Button Grid.Column="1" Margin="5" Content="" FontFamily="Segoe MDL2 Assets" Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Width="26" Padding="0" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Stretch" Command="{Binding CopyShareUrl}" />
+      </Grid>
+      <Image Source="{Binding ImageSource}" Visibility="{Binding ImageSource, Converter={StaticResource UriNullVisibilityConverter}}" MaxHeight="550"/>
+      <Grid HorizontalAlignment="Center" Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}">
+        <Ellipse Fill="{StaticResource MahApps.Brushes.Control.Background}" Stroke="{StaticResource MahApps.Brushes.Control.Border}" StrokeThickness="2" />
+        <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="128" HorizontalAlignment="Center" Opacity="0.5" Margin="30"/>
+      </Grid>
+    </StackPanel>
+    <TextBox Margin="5" Text="{Binding FileName}" IsReadOnly="True" Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}" Grid.Row="2"/>
+    <TextBox Margin="5" Text="{Binding TextContent}" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" Grid.Row="2"/>
+    <ComboBox Grid.Row="3" Margin="5" ItemsSource="{Binding Lanes}" SelectedItem="{Binding SelectedLane}">
       <ComboBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal">

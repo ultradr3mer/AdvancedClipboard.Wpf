@@ -1,7 +1,10 @@
 ﻿using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
+using Prism.Commands;
+using System;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 {
@@ -9,7 +12,7 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
   {
     #region Constructors
 
-    public LanePageDesignTimeViewModel()
+    public LanePageDesignTimeViewModel():base(null,null,null,null)
     {
       this.Entries = new BindingList<HistoryPageEntryViewModel>()
       {
@@ -50,6 +53,7 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
     {
       return new HistoryPageEntryViewModel(null) { TextContent = text };
     }
+
 
     #endregion Methods
   }

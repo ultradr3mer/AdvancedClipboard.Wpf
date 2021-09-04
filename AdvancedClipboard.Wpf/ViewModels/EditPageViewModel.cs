@@ -1,5 +1,6 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Constants;
+using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
 using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
@@ -21,6 +23,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private readonly HistoryPageViewModel historyPageViewModel;
     private readonly Client client;
     private readonly ClipboardService service;
+    private readonly IUnityContainer container;
     private readonly IRegionManager regionManager;
     private readonly LaneViewModel NoLane = new LaneViewModel(null) { Name = "None" };
 
@@ -28,7 +31,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Constructors
 
-    public EditPageViewModel(IRegionManager regionManager, HistoryPageViewModel historyPageViewModel, Client client, ClipboardService service)
+    public EditPageViewModel(IRegionManager regionManager, HistoryPageViewModel historyPageViewModel, Client client, ClipboardService service, IUnityContainer container)
     {
       this.ReturnCommand = new DelegateCommand(this.ReturnCommandExecute);
       this.SaveCommand = new DelegateCommand(this.SaveCommandExecute);
@@ -36,6 +39,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.historyPageViewModel = historyPageViewModel;
       this.client = client;
       this.service = service;
+      this.container = container;
     }
 
     #endregion Constructors
@@ -65,7 +69,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      this.Lanes = new[] { this.NoLane }.Concat(this.historyPageViewModel.Lanes).ToList();
+      this.Lanes = new[] { this.NoLane }.Concat(this.service.Lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o))).ToList();
 
       this.Id = Guid.Parse(navigationContext.Parameters[EntryIdParmeter].ToString());
 
@@ -108,10 +112,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
         data.TextContent = this.Text;
       }
 
-      if(this.SelectedLane != this.NoLane)
-      {
-        data.LaneId = this.SelectedLane.Id;
-      }
+      data.LaneId = this.SelectedLane != this.NoLane ? this.SelectedLane.Id : (Guid?)null;
 
       await this.client.ClipboardPutAsync(data);
 

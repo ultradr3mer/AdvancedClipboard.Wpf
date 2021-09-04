@@ -21,7 +21,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public const string LaneIdParameter = "Id";
     private readonly Client client;
-    private readonly HistoryPageViewModel historyPageViewModel;
+    private readonly ClipboardService clipboardService;
     private readonly IUnityContainer container;
     private readonly IRegionManager regionManager;
 
@@ -29,10 +29,10 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Constructors
 
-    public LanePageViewModel(Client client, HistoryPageViewModel historyPageViewModel, IUnityContainer container, IRegionManager regionManager)
+    public LanePageViewModel(Client client, ClipboardService clipboardService, IUnityContainer container, IRegionManager regionManager)
     {
       this.client = client;
-      this.historyPageViewModel = historyPageViewModel;
+      this.clipboardService = clipboardService;
       this.container = container;
       this.regionManager = regionManager;
       this.ReturnCommand = new DelegateCommand(this.ReturnCommandExecute);
@@ -72,7 +72,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     {
       this.Id = Guid.Parse(navigationContext.Parameters[LanePageViewModel.LaneIdParameter].ToString());
 
-      this.SetDataModel(this.historyPageViewModel.Lanes.Single(o => o.Id == this.Id).WriteToDataModel());
+      this.SetDataModel(this.clipboardService.Lanes.Single(o => o.Id == this.Id));
 
       this.Load();
     }

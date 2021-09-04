@@ -47,6 +47,7 @@ namespace AdvancedClipboard.Wpf.Services
     #region Properties
 
     public BindingList<ClipboardGetData> ClipboardItems { get; } = new BindingList<ClipboardGetData>();
+    public BindingList<LaneGetData> Lanes { get; } = new BindingList<LaneGetData>();
 
     #endregion Properties
 
@@ -82,6 +83,14 @@ namespace AdvancedClipboard.Wpf.Services
 
     public async Task Refresh()
     {
+      this.Lanes.Clear();
+      var lanes = await this.client.LaneAsync();
+
+      foreach (var item in lanes)
+      {
+        this.Lanes.Add(item);
+      }
+
       this.ClipboardItems.Clear();
 
       var data = await client.ClipboardGetAsync();

@@ -2,27 +2,25 @@
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
 using Prism.Commands;
-using System;
+using Prism.Regions;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
-  internal class HistoryPageViewModel : BaseViewModel
+  internal class HistoryPageViewModel : BaseViewModel, INavigationAware
   {
     #region Fields
 
     private const string ClosTextInputIcon = "";
     private const string OpenTextInputIcon = "";
+    private readonly Client client;
     private readonly IUnityContainer container;
     private readonly ClipboardService service;
-    private readonly Client client;
 
     #endregion Fields
 
@@ -38,8 +36,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.OpenCloseTextInputCommand = new DelegateCommand<bool?>(this.OpenCloseTextInputCommandExecute);
       this.AddTextInputCommand = new DelegateCommand(this.AddTextInputCommandExecute, this.AddTextInputCommandCanExecute);
 
-      this.Load();
-
       this.OpenCloseTextInputContent = OpenTextInputIcon;
 
       this.PropertyChanged += this.HistoryPageViewModel_PropertyChanged;
@@ -50,38 +46,43 @@ namespace AdvancedClipboard.Wpf.ViewModels
     #region Properties
 
     public ICommand AddCommand { get; }
-
     public DelegateCommand AddTextInputCommand { get; }
-
     public bool CanAddTextInput { get; set; }
-
     public BindingList<HistoryPageEntryViewModel> Entries { get; set; }
-
+    public Visibility InputBoxVisibility { get; set; }
+    public ICommand OpenCloseTextInputCommand { get; }
+    public string OpenCloseTextInputContent { get; set; }
+    public ICommand RefreshCommand { get; }
+    public string TextInput { get; set; }
     public BindingList<LaneViewModel> Lanes { get; set; }
 
-    public Visibility InputBoxVisibility { get; set; }
+    public bool IsNavigationTarget(NavigationContext navigationContext)
+    {
+      return true;
+    }
 
-    public ICommand OpenCloseTextInputCommand { get; }
+    public void OnNavigatedFrom(NavigationContext navigationContext)
+    {
+    }
 
-    public string OpenCloseTextInputContent { get; set; }
-
-    public ICommand RefreshCommand { get; }
-
-    public string TextInput { get; set; }
+    public void OnNavigatedTo(NavigationContext navigationContext)
+    {
+      this.Load();
+    }
 
     #endregion Properties
 
     #region Methods
 
-    protected virtual async void Load()
+    protected virtual void Load()
     {
       this.InputBoxVisibility = Visibility.Collapsed;
+
       this.service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
       this.Entries = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
 
-      var lanes = await this.client.LaneAsync();
-
-      this.Lanes = new BindingList<LaneViewModel>(lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o)).ToList());
+      this.service.Lanes.ListChanged += this.LaneItemsListChanged;
+      this.Lanes = new BindingList<LaneViewModel>(this.service.Lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o)).ToList());
     }
 
     private void AddCommandExecute()
@@ -114,9 +115,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
       {
         this.Entries.RemoveAt(e.NewIndex);
       }
-      else if(e.ListChangedType == ListChangedType.Reset)
+      else if (e.ListChangedType == ListChangedType.Reset)
       {
-        if(listSender.Count == 0)
+        if (listSender.Count == 0)
         {
           this.Entries = new BindingList<HistoryPageEntryViewModel>();
         }
@@ -128,6 +129,29 @@ namespace AdvancedClipboard.Wpf.ViewModels
       if (e.PropertyName == nameof(TextInput))
       {
         this.AddTextInputCommand.RaiseCanExecuteChanged();
+      }
+    }
+
+    private void LaneItemsListChanged(object sender, ListChangedEventArgs e)
+    {
+      IList<LaneGetData> listSender = (IList<LaneGetData>)sender;
+
+      if (e.ListChangedType == ListChangedType.ItemAdded)
+      {
+        LaneGetData addedData = listSender[e.NewIndex];
+        LaneViewModel newEntry = this.container.Resolve<LaneViewModel>().GetWithDataModel(addedData);
+        this.Lanes.Insert(e.NewIndex, newEntry);
+      }
+      else if (e.ListChangedType == ListChangedType.ItemDeleted)
+      {
+        this.Lanes.RemoveAt(e.NewIndex);
+      }
+      else if (e.ListChangedType == ListChangedType.Reset)
+      {
+        if (listSender.Count == 0)
+        {
+          this.Lanes = new BindingList<LaneViewModel>();
+        }
       }
     }
 

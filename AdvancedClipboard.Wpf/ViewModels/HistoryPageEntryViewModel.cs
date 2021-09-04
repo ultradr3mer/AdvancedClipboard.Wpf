@@ -6,7 +6,9 @@ using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
 using Prism.Regions;
 using System;
+using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
@@ -50,6 +52,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public ICommand LoadIntoClipboardCommand { get; }
 
     public string TextContent { get; set; }
+    public SolidColorBrush LaneColorBrush { get; internal set; }
 
     #endregion Properties
 
@@ -65,6 +68,13 @@ namespace AdvancedClipboard.Wpf.ViewModels
       else if (data.ContentTypeId == ContentTypes.File)
       {
         this.FileContentUrl = SimpleFileTokenData.CreateUrl(data.FileContentUrl);
+      }
+
+      LaneGetData laneGetData;
+      if(data.LaneId != null && (laneGetData = this.clipboardService.Lanes.FirstOrDefault(o => o.Id == data.LaneId)) != null)
+      {
+        var color = (Color)ColorConverter.ConvertFromString(laneGetData.Color);
+        this.LaneColorBrush = new SolidColorBrush(color);
       }
     }
 

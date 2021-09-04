@@ -2,7 +2,9 @@
 using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
+using System;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 {
@@ -12,18 +14,32 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 
     public EntriesDesignTimeViewModel()
     {
+      var colors = new[]
+      {
+        this.CreateBrush("#FFDC143C"),
+        this.CreateBrush("#FF9400D3"),
+        this.CreateBrush("#FF6495ED"),
+        this.CreateBrush("#FFFFFFFF")
+      };
+
       this.Entries = new BindingList<HistoryPageEntryViewModel>()
       {
-        this.CreateTextEntry("Erster Text"),
+        this.CreateTextEntry("Erster Text", colors[0]),
         this.CreateImageEntry("F451D57C64FC6140/clip_20210413_135842.png"),
-        this.CreateFileEntry("3CDAB6DEE7BE995B/clip_20210414_133243.zip", "datei.zip"),
-        this.CreateTextEntry("Zweiter Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text."),
-        this.CreateTextEntry("Anderer Text"),
-        this.CreateTextEntry("Noch ein Text"),
-        this.CreateImageEntry("26C8C736070D7EFF/clip_20210316_213458.jpg"),
+        this.CreateFileEntry("3CDAB6DEE7BE995B/clip_20210414_133243.zip", "datei.zip", colors[1]),
+        this.CreateTextEntry("Zweiter Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text, ganz langer Text.", colors[2]),
+        this.CreateTextEntry("Anderer Text", colors[3]),
+        this.CreateTextEntry("Noch ein Text", colors[0]),
+        this.CreateImageEntry("26C8C736070D7EFF/clip_20210316_213458.jpg", colors[2]),
         this.CreateTextEntry("Dieser Text"),
         this.CreateTextEntry("Der andere Text")
       };
+    }
+
+    private SolidColorBrush CreateBrush(string hex)
+    {
+      var backColor = (Color)ColorConverter.ConvertFromString(hex);
+      return new SolidColorBrush(backColor);
     }
 
     #endregion Constructors
@@ -36,24 +52,19 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 
     #region Methods
 
-    private HistoryPageEntryViewModel CreateFileEntry(string url, string fileName)
+    private HistoryPageEntryViewModel CreateFileEntry(string url, string fileName, SolidColorBrush laneColorBrush = default(SolidColorBrush))
     {
-      return new HistoryPageEntryViewModel(null,null).GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.File, FileName = fileName });
+      return new HistoryPageEntryViewModel(null, null) { LaneColorBrush = laneColorBrush }.GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.File, FileName = fileName });
     }
 
-    private HistoryPageEntryViewModel CreateImageEntry(string url)
+    private HistoryPageEntryViewModel CreateImageEntry(string url, SolidColorBrush laneColorBrush = default(SolidColorBrush))
     {
-      return new HistoryPageEntryViewModel(null, null).GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.Image });
+      return new HistoryPageEntryViewModel(null, null) { LaneColorBrush = laneColorBrush }.GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.Image });
     }
 
-    private LaneViewModel CreateLaneEntry(string color, string name)
+    private HistoryPageEntryViewModel CreateTextEntry(string text, SolidColorBrush laneColorBrush = default(SolidColorBrush))
     {
-      return new LaneViewModel(null).GetWithDataModel(new LaneGetData { Color = color, Name = name });
-    }
-
-    private HistoryPageEntryViewModel CreateTextEntry(string text)
-    {
-      return new HistoryPageEntryViewModel(null, null) { TextContent = text };
+      return new HistoryPageEntryViewModel(null, null) { LaneColorBrush = laneColorBrush, TextContent = text };
     }
 
     #endregion Methods

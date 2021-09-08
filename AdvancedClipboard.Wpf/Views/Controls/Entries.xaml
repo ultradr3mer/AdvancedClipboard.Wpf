@@ -27,11 +27,11 @@
               <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
               <Setter Property="FontWeight" Value="Normal" />
               <Setter Property="FontSize" Value="14" />
-              <Setter Property="BorderBrush" Value="#7F2F2F2F" />
+              <Setter Property="BorderBrush" Value="#99C5C5C5" />
             </Style>
           </Button.Style>
           <Grid>
-            <Grid Margin="5,5,5,8">
+            <Grid Margin="9,5,5,5">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -43,8 +43,8 @@
                 <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="64" HorizontalAlignment="Center" Opacity="0.5" />
                 <TextBlock Text="{Binding FileName}" TextWrapping="Wrap" />
               </StackPanel>
-              <Button Command="{Binding EditCommand}" Grid.Column="1" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1" Style="{StaticResource MahApps.Styles.Button.CircleNoBorder}" />
-              <Button Command="{Binding DeleteCommand}" Grid.Column="2" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1">
+              <Button Command="{Binding EditCommand}" Grid.Column="1" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1" Style="{StaticResource MahApps.Styles.Button.CircleNoBorder}" FontSize="12" Width="20" Height="20" />
+              <Button Command="{Binding DeleteCommand}" Grid.Column="2" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1" Width="20" Height="20">
                 <Button.Style>
                   <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.CircleNoBorder}">
                     <Setter Property="Background" Value="Transparent" />
@@ -57,7 +57,7 @@
                 </Button.Style>
               </Button>
             </Grid>
-            <Rectangle Fill="{Binding LaneColorBrush}" VerticalAlignment="Bottom" Height="3"/>
+            <Border CornerRadius="2" Background="{Binding LaneColorBrush}" HorizontalAlignment="Left" Width="3" Margin="1" />
           </Grid>
         </Button>
       </DataTemplate>

@@ -1,8 +1,10 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Services;
+using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
 using Prism.Regions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -19,6 +21,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private const string ClosTextInputIcon = "";
     private const string OpenTextInputIcon = "";
     private readonly Client client;
+    private readonly IRegionManager regionManager;
     private readonly IUnityContainer container;
     private readonly ClipboardService service;
 
@@ -26,19 +29,26 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Constructors
 
-    public HistoryPageViewModel(IUnityContainer container, ClipboardService service, Client client)
+    public HistoryPageViewModel(IUnityContainer container, ClipboardService service, Client client, IRegionManager regionManager)
     {
       this.container = container;
       this.service = service;
       this.client = client;
+      this.regionManager = regionManager;
       this.RefreshCommand = new DelegateCommand(this.RefreshCommandExecute);
       this.AddCommand = new DelegateCommand(this.AddCommandExecute);
       this.OpenCloseTextInputCommand = new DelegateCommand<bool?>(this.OpenCloseTextInputCommandExecute);
       this.AddTextInputCommand = new DelegateCommand(this.AddTextInputCommandExecute, this.AddTextInputCommandCanExecute);
+      this.OpenConfigurationCommand = new DelegateCommand(this.OpenConfigurationCommandExecute);
 
       this.OpenCloseTextInputContent = OpenTextInputIcon;
 
       this.PropertyChanged += this.HistoryPageViewModel_PropertyChanged;
+    }
+
+    private void OpenConfigurationCommandExecute()
+    {
+      regionManager.RequestNavigate(App.RegionName, new Uri(nameof(ConfigurationPage), UriKind.Relative));
     }
 
     #endregion Constructors
@@ -55,6 +65,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public ICommand RefreshCommand { get; }
     public string TextInput { get; set; }
     public BindingList<LaneViewModel> Lanes { get; set; }
+    public ICommand OpenConfigurationCommand { get; }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
     {

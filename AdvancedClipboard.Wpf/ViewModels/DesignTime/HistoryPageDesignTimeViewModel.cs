@@ -14,7 +14,7 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
   {
     #region Constructors
 
-    public HistoryPageDesignTimeViewModel() : base(null, null, null)
+    public HistoryPageDesignTimeViewModel() : base(null, null, null, null)
     {
       this.Entries = new EntriesDesignTimeViewModel().Entries;
 

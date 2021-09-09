@@ -21,6 +21,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private readonly Client client;
     private readonly IUnityContainer container;
     private readonly ClipboardService service;
+    private bool isInitialized;
 
     #endregion Fields
 
@@ -67,7 +68,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      this.Load();
+      if (!this.isInitialized)
+      {
+        this.Load();
+        this.isInitialized = true;
+      }
     }
 
     #endregion Properties

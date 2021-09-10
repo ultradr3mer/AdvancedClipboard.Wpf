@@ -27,7 +27,7 @@
               <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
               <Setter Property="FontWeight" Value="Normal" />
               <Setter Property="FontSize" Value="14" />
-              <Setter Property="BorderBrush" Value="#99C5C5C5" />
+              <Setter Property="BorderThickness" Value="0" />
             </Style>
           </Button.Style>
           <Grid>

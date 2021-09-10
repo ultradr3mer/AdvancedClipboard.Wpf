@@ -45,7 +45,7 @@
                     <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
                     <Setter Property="FontWeight" Value="Normal" />
                     <Setter Property="FontSize" Value="14" />
-                    <Setter Property="BorderBrush" Value="{Binding ForegroundBrush}" />
+                    <Setter Property="BorderThickness" Value="0" />
                   </Style>
                 </Button.Style>
                 <TextBlock Text="{Binding Name}" Foreground="{Binding ForegroundBrush}"/>
@@ -53,7 +53,7 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Button Content="" Grid.Column="1" Margin="3" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}"/>
+        <Button Content="" Grid.Column="1" Margin="3" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
         <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2"/>
       </Grid>
     </ScrollViewer>

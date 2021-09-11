@@ -12,7 +12,12 @@ namespace AdvancedClipboard.Wpf.ViewModels
 {
   internal class LaneViewModel : BaseViewModel<LaneGetData>
   {
+    #region Fields
+
     private readonly IRegionManager regionManager;
+
+    #endregion Fields
+
     #region Constructors
 
     public LaneViewModel(IRegionManager regionManager)
@@ -29,11 +34,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public Brush ForegroundBrush { get; set; }
 
+    public Guid Id { get; set; }
+
     public string Name { get; set; }
 
     public ICommand OpenLaneCommand { get; }
-
-    public Guid Id { get; set; }
 
     #endregion Properties
 

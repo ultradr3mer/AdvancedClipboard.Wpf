@@ -153,12 +153,15 @@
     </Compile>
     <Compile Include="Services\ClipboardService.cs" />
     <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="ViewModels\ConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModels\DesignTime\ConfigurationPageDesignTimeViewModel.cs" />
     <Compile Include="ViewModels\DesignTime\EntriesDesignTimeViewModel.cs" />
     <Compile Include="ViewModels\DesignTime\HistoryPageDesignTimeViewModel.cs" />
     <Compile Include="ViewModels\DesignTime\LanePageDesignTimeViewModel.cs" />
     <Compile Include="ViewModels\EditPageViewModel.cs" />
     <Compile Include="ViewModels\HistoryPageEntryViewModel.cs" />
     <Compile Include="ViewModels\HistoryPageViewModel.cs" />
+    <Compile Include="ViewModels\LaneConfigurationViewModel.cs" />
     <Compile Include="ViewModels\LanePageViewModel.cs" />
     <Compile Include="ViewModels\LaneViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

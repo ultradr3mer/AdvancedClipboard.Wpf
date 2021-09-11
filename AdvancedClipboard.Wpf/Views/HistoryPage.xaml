@@ -7,7 +7,8 @@
              xmlns:comp="clr-namespace:AdvancedClipboard.Wpf.Composite"
              xmlns:designTime="clr-namespace:AdvancedClipboard.Wpf.ViewModels.DesignTime"
              xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:Controls="clr-namespace:AdvancedClipboard.Wpf.Views.Controls" x:Class="AdvancedClipboard.Wpf.Views.HistoryPage"
+             xmlns:Controls="clr-namespace:AdvancedClipboard.Wpf.Views.Controls" 
+             x:Class="AdvancedClipboard.Wpf.Views.HistoryPage"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="450"
@@ -29,7 +30,8 @@
           <ColumnDefinition Width="*"/>
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ItemsControl ItemsSource="{Binding Lanes}">
+        <Border Background="Black" CornerRadius="4" Margin="3" Grid.ColumnSpan="2" Opacity="0.4"/>
+        <ItemsControl ItemsSource="{Binding Lanes}" Margin="3">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel/>
@@ -37,9 +39,9 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <Button Margin="3"
+              <Button Margin="2"
                   Command="{Binding OpenLaneCommand}"
-                  HorizontalContentAlignment="Stretch" Background="{Binding BackgroundBrush}">
+                  HorizontalContentAlignment="Stretch" Background="{Binding BackgroundBrush}" SnapsToDevicePixels="True">
                 <Button.Style>
                   <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                     <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
@@ -53,7 +55,7 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Button Content="" Grid.Column="1" Margin="3" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
+        <Button Content="" Grid.Column="1" Margin="5" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
         <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2"/>
       </Grid>
     </ScrollViewer>

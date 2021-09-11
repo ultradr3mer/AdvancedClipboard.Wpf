@@ -86,7 +86,7 @@ namespace AdvancedClipboard.Wpf.Services
       this.Lanes.Clear();
       this.ClipboardItems.Clear();
 
-      var lanes = await this.client.LaneAsync();
+      var lanes = await this.client.LaneGetAsync();
       foreach (var item in lanes)
       {
         this.Lanes.Add(item);

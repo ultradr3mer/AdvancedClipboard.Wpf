@@ -7,8 +7,6 @@ using Prism.Regions;
 using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Unity;
@@ -66,6 +64,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
+      this.Entries.Clear();
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)

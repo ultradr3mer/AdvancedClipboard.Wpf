@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
-  internal class HistoryPageEntryViewModel : BaseViewModel<ClipboardGetData>
+  public class HistoryPageEntryViewModel : BaseViewModel<ClipboardGetData>
   {
     #region Fields
 
@@ -76,6 +76,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
       if(data.LaneId != null && (laneGetData = this.clipboardService.Lanes.FirstOrDefault(o => o.Id == data.LaneId)) != null)
       {
         var color = (Color)ColorConverter.ConvertFromString(laneGetData.Color);
+        this.LaneColorBrush = new SolidColorBrush(color);
+      }
+      else
+      {
+        var color = (Color)ColorConverter.ConvertFromString("#5effffff");
         this.LaneColorBrush = new SolidColorBrush(color);
       }
     }

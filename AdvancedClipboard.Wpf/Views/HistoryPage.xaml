@@ -30,8 +30,8 @@
           <ColumnDefinition Width="*"/>
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Border Background="Black" CornerRadius="4" Margin="3" Grid.ColumnSpan="2" Opacity="0.4"/>
-        <ItemsControl ItemsSource="{Binding Lanes}" Margin="3">
+        <Border Background="Black" CornerRadius="4" Margin="2" Grid.ColumnSpan="2" Opacity="0.4"/>
+        <ItemsControl ItemsSource="{Binding Lanes}" Margin="2">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel/>
@@ -39,7 +39,7 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <Button Margin="2"
+              <Button Margin="1"
                   Command="{Binding OpenLaneCommand}"
                   HorizontalContentAlignment="Stretch" Background="{Binding BackgroundBrush}" SnapsToDevicePixels="True">
                 <Button.Style>
@@ -55,8 +55,8 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Button Content="" Grid.Column="1" Margin="5" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
-        <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2"/>
+        <Button Content="" Grid.Column="1" Margin="3" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
+        <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2" Margin="1"/>
       </Grid>
     </ScrollViewer>
     <StackPanel VerticalAlignment="Bottom" Margin="0,0,16,0">

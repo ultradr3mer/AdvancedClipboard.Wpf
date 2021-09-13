@@ -19,7 +19,7 @@
   <ItemsControl Grid.Row="2" ItemsSource="{Binding Entries}">
     <ItemsControl.ItemTemplate>
       <DataTemplate>
-        <Button Margin="3"
+        <Button Margin="1"
                   Command="{Binding LoadIntoClipboardCommand}"
                   HorizontalContentAlignment="Stretch" Background="#CC2F2F2F" Padding="0">
           <Button.Style>

@@ -40,7 +40,7 @@ namespace AdvancedClipboard.Wpf.Views
       regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<EditPage>());
       regionManager.RegisterViewWithRegion(App.RegionName, () => container.Resolve<ConfigurationPage>());
 
-      WindowBlur.SetIsEnabled(this, true);
+      //WindowBlur.SetIsEnabled(this, true);
     }
 
     #endregion Constructors

@@ -1,19 +1,22 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Extensions;
+using AdvancedClipboard.Wpf.Interfaces;
 using AdvancedClipboard.Wpf.Services;
 using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
-  internal class LanePageViewModel : BaseViewModel<LaneGetData>, INavigationAware
+  internal class LanePageViewModel : BaseViewModel<LaneGetData>, INavigationAware, IEntryHostViewModel
   {
     #region Fields
 
@@ -46,11 +49,19 @@ namespace AdvancedClipboard.Wpf.ViewModels
     #region Properties
 
     public SolidColorBrush BackgroundBrush { get; private set; }
-    public BindingList<HistoryPageEntryViewModel> Entries { get; set; }
+
+    public BindingList<LaneEntryViewModel> Lanes { get; protected set; }
+
+    public BindingList<HistoryPageEntryViewModel> Entries { get; protected set; }
+
     public SolidColorBrush ForegroundBrush { get; private set; }
+
     public Guid Id { get; set; }
+
     public Brush LaneTextBrush { get; set; }
+
     public string Name { get; set; }
+
     public ICommand ReturnCommand { get; }
 
     #endregion Properties
@@ -65,22 +76,24 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
       this.Entries.Clear();
+      this.Lanes.Clear();
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
       this.Id = Guid.Parse(navigationContext.Parameters[LanePageViewModel.LaneIdParameter].ToString());
 
-      this.SetDataModel(this.clipboardService.Lanes.Single(o => o.Id == this.Id));
-
       this.Load();
     }
 
     private async void Load()
     {
-      var items = (await this.client.ClipboardGetlaneAsync(this.Id)).Reverse().ToList();
+      Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
+      Task<ClipboardPageGetData> entriesTask = this.client.ClipboardGetlanepageAsync(this.Id, 1);
 
-      this.Entries = new BindingList<HistoryPageEntryViewModel>(items.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
+      this.SetDataModel((await lanesTask).Single(o => o.Id == this.Id));
+      this.Lanes = new BindingList<LaneEntryViewModel>((await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
+      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).PageContent.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o)).ToList());
     }
 
     protected override void OnReadingDataModel(LaneGetData data)

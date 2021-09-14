@@ -8,8 +8,10 @@ using Prism.Commands;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Unity;
@@ -23,7 +25,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
     internal const string EntryIdParmeter = "Id";
     private readonly Client client;
     private readonly IUnityContainer container;
-    private readonly HistoryPageViewModel historyPageViewModel;
     private readonly LaneEntryViewModel NoLane = new LaneEntryViewModel(null) { Name = "None" };
     private readonly IRegionManager regionManager;
     private readonly ClipboardService service;
@@ -32,14 +33,13 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Constructors
 
-    public EditPageViewModel(IRegionManager regionManager, HistoryPageViewModel historyPageViewModel, Client client, ClipboardService service, IUnityContainer container)
+    public EditPageViewModel(IRegionManager regionManager, Client client, ClipboardService service, IUnityContainer container)
     {
       this.ReturnCommand = new DelegateCommand(this.ReturnCommandExecute);
       this.SaveCommand = new DelegateCommand(this.SaveCommandExecute);
       this.OpenShareUrl = new DelegateCommand(this.OpenShareUrlExecute);
       this.CopyShareUrl = new DelegateCommand(this.CopyShareUrlExecute);
       this.regionManager = regionManager;
-      this.historyPageViewModel = historyPageViewModel;
       this.client = client;
       this.service = service;
       this.container = container;
@@ -78,11 +78,18 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      this.Lanes = new[] { this.NoLane }.Concat(this.service.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o))).ToList();
-
       this.Id = Guid.Parse(navigationContext.Parameters[EntryIdParmeter].ToString());
 
-      this.SetDataModel(this.historyPageViewModel.Entries.Single(o => o.Id == this.Id).WriteToDataModel());
+      this.Load();
+    }
+
+    private async void Load()
+    {
+      Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
+      Task<ICollection<ClipboardGetData>> entryTask = this.client.ClipboardGetAsync(this.Id);
+
+      this.Lanes = (await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList();
+      this.SetDataModel((await entryTask).Single());
     }
 
     protected override void OnReadingDataModel(ClipboardGetData data)
@@ -139,8 +146,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
       data.LaneId = this.SelectedLane != this.NoLane ? this.SelectedLane.Id : (Guid?)null;
 
       await this.client.ClipboardPutAsync(data);
-
-      await this.service.Refresh();
 
       this.regionManager.RequestNavigate(App.RegionName, new Uri(nameof(HistoryPage), UriKind.Relative));
     }

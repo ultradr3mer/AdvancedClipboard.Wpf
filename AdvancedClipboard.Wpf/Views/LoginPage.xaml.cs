@@ -52,7 +52,6 @@ namespace AdvancedClipboard.Wpf.Views
         this.message.Visibility = Visibility.Visible;
         this.settingsService.SetCredentials(this.username.Text, this.password.Password);
         await this.client.ClipboardAuthorizeAsync();
-        await this.clipboardService.Refresh();
         this.regionManager.RequestNavigate("MainRegion", new Uri(nameof(HistoryPage), UriKind.Relative));
 
         this.ShowSingInScreen(false);

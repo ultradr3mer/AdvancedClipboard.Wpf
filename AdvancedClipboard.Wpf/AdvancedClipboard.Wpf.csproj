@@ -112,6 +112,7 @@
     <Compile Include="Extensions\IListExtension.cs" />
     <Compile Include="Extensions\ObjectExtensionMethods.cs" />
     <Compile Include="Extensions\TimespanExtension.cs" />
+    <Compile Include="Interfaces\IEntryHostViewModel.cs" />
     <Compile Include="Services\Client.cs" />
     <Compile Include="Services\Client.Generated.cs" />
     <Compile Include="Interop\WindowBlur.cs" />

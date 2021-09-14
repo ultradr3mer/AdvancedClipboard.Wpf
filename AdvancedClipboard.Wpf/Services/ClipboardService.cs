@@ -1,6 +1,7 @@
 ﻿using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Data;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -44,16 +45,9 @@ namespace AdvancedClipboard.Wpf.Services
 
     #endregion Constructors
 
-    #region Properties
-
-    public BindingList<ClipboardGetData> ClipboardItems { get; } = new BindingList<ClipboardGetData>();
-    public BindingList<LaneGetData> Lanes { get; } = new BindingList<LaneGetData>();
-
-    #endregion Properties
-
     #region Methods
 
-    public void AddClipboardContent()
+    public async Task<IList<ClipboardGetData>> AddClipboardContent()
     {
       string textContent;
       BitmapSource imageContent;
@@ -61,47 +55,23 @@ namespace AdvancedClipboard.Wpf.Services
       if (data.GetDataPresent(DataFormats.FileDrop))
       {
         var files = (string[])data.GetData(DataFormats.FileDrop);
-        this.PostFilesAsync(files);
+        return await this.PostFilesAsync(files);
       }
       if (!string.IsNullOrEmpty(textContent = Clipboard.GetText()))
       {
-        this.PostPlaintextAsync(textContent);
+        return new List<ClipboardGetData> { await this.PostPlaintextAsync(textContent) };
       }
       else if ((imageContent = Clipboard.GetImage()) != null)
       {
-        this.PostImageAsync(imageContent);
-      }
-    }
-
-    public async Task Delete(Guid id)
-    {
-      await this.client.ClipboardDeleteAsync(id);
-
-      var itemToRemove = ClipboardItems.FirstOrDefault(o => o.Id == id);
-      this.ClipboardItems.Remove(itemToRemove);
-    }
-
-    public async Task Refresh()
-    {
-      this.Lanes.Clear();
-      this.ClipboardItems.Clear();
-
-      var lanes = await this.client.LaneGetAsync();
-      foreach (var item in lanes)
-      {
-        this.Lanes.Add(item);
+        return new List<ClipboardGetData> { await this.PostImageAsync(imageContent) };
       }
 
-      var data = await client.ClipboardGetAsync();
-      foreach (var item in data)
-      {
-        this.ClipboardItems.Insert(0, item);
-      }
+      return new List<ClipboardGetData>();
     }
 
-    internal void AddClipboardContent(string textInput)
+    internal async Task<ClipboardGetData> AddClipboardContent(string textInput)
     {
-      this.PostPlaintextAsync(textInput);
+      return await this.PostPlaintextAsync(textInput);
     }
 
     internal async void SendToClipboard(ClipboardGetData clipboardGetData)
@@ -137,18 +107,19 @@ namespace AdvancedClipboard.Wpf.Services
       }
     }
 
-    private async void PostFilesAsync(string[] files)
+    private async Task<IList<ClipboardGetData>> PostFilesAsync(string[] files)
     {
+      var result = new List<ClipboardGetData>();
       foreach (var file in files)
       {
         var fileName = Path.GetFileName(file);
         using var stream = File.OpenRead(file);
-        var result = await this.client.ClipboardPostnamedfileAsync(fileName, new FileParameter(stream));
-        this.ClipboardItems.Insert(0, result);
+        result.Add(await this.client.ClipboardPostnamedfileAsync(fileName, new FileParameter(stream)));
       }
+      return result;
     }
 
-    private async void PostImageAsync(BitmapSource imageContent)
+    private async Task<ClipboardGetData> PostImageAsync(BitmapSource imageContent)
     {
       using var memoryStream = new MemoryStream();
 
@@ -159,14 +130,12 @@ namespace AdvancedClipboard.Wpf.Services
 
       memoryStream.Seek(0, SeekOrigin.Begin);
 
-      var result = await this.client.ClipboardPostfileAsync(".png", new FileParameter(memoryStream));
-      this.ClipboardItems.Insert(0, result);
+      return await this.client.ClipboardPostfileAsync(".png", new FileParameter(memoryStream));
     }
 
-    private async void PostPlaintextAsync(string textContent)
+    private async Task<ClipboardGetData> PostPlaintextAsync(string textContent)
     {
-      var result = await this.client.ClipboardPostplaintextAsync(new ClipboardPostPlainTextData() { Content = textContent });
-      this.ClipboardItems.Insert(0, result);
+      return await this.client.ClipboardPostplaintextAsync(new ClipboardPostPlainTextData() { Content = textContent });
     }
 
     #endregion Methods

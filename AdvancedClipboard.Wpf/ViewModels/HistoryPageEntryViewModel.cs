@@ -1,6 +1,7 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Data;
+using AdvancedClipboard.Wpf.Interfaces;
 using AdvancedClipboard.Wpf.Services;
 using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
@@ -17,6 +18,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
   {
     #region Fields
 
+    public IEntryHostViewModel hostViewModel;
+    private readonly Client client;
     private readonly ClipboardService clipboardService;
     private readonly IRegionManager regionManager;
 
@@ -24,7 +27,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Constructors
 
-    public HistoryPageEntryViewModel(ClipboardService clipboardService, IRegionManager regionManager)
+    public HistoryPageEntryViewModel(ClipboardService clipboardService, IRegionManager regionManager, Client client)
     {
       this.LoadIntoClipboardCommand = new DelegateCommand(this.LoadIntoClipboardCommandExecute);
       this.DeleteCommand = new DelegateCommand(this.DeleteCommandExecute);
@@ -32,6 +35,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
       this.clipboardService = clipboardService;
       this.regionManager = regionManager;
+      this.client = client;
     }
 
     #endregion Constructors
@@ -50,15 +54,21 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public Uri ImageUrl { get; set; }
 
+    public SolidColorBrush LaneColorBrush { get; internal set; }
+
     public ICommand LoadIntoClipboardCommand { get; }
 
     public string TextContent { get; set; }
 
-    public SolidColorBrush LaneColorBrush { get; internal set; }
-
     #endregion Properties
 
     #region Methods
+
+    internal HistoryPageEntryViewModel SetHost(IEntryHostViewModel entryHostViewModel)
+    {
+      this.hostViewModel = entryHostViewModel;
+      return this;
+    }
 
     protected override void OnReadingDataModel(ClipboardGetData data)
     {
@@ -72,8 +82,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
         this.FileContentUrl = SimpleFileTokenData.CreateUrl(data.FileContentUrl);
       }
 
-      LaneGetData laneGetData;
-      if(data.LaneId != null && (laneGetData = this.clipboardService.Lanes.FirstOrDefault(o => o.Id == data.LaneId)) != null)
+      LaneEntryViewModel laneGetData;
+      if (data.LaneId != null && (laneGetData = this.hostViewModel.Lanes.FirstOrDefault(o => o.Id == data.LaneId)) != null)
       {
         var color = (Color)ColorConverter.ConvertFromString(laneGetData.Color);
         this.LaneColorBrush = new SolidColorBrush(color);
@@ -87,7 +97,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private async void DeleteCommandExecute()
     {
-      if(MessageBox.Show("Are you sure you want to delete this entry?",
+      if (MessageBox.Show("Are you sure you want to delete this entry?",
                          "Advanced Clipboard",
                          MessageBoxButton.OKCancel,
                          MessageBoxImage.Warning) != MessageBoxResult.OK)
@@ -95,7 +105,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
         return;
       }
 
-      await this.clipboardService.Delete(this.Id);
+      await this.client.ClipboardDeleteAsync(this.Id);
     }
 
     private void EditCommandExecute()

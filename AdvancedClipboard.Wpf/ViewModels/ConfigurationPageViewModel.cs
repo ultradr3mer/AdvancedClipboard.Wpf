@@ -66,9 +66,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.Load();
     }
 
-    private void Load()
+    private async void Load()
     {
-      this.Lanes = new BindingList<LaneConfigurationViewModel>(this.service.Lanes.Select(o => this.container.Resolve<LaneConfigurationViewModel>().GetWithDataModel(o)).ToList());
+      var lanes = (await this.client.LaneGetAsync()).ToList();
+      this.Lanes = new BindingList<LaneConfigurationViewModel>(lanes.Select(o => this.container.Resolve<LaneConfigurationViewModel>().GetWithDataModel(o)).ToList());
+
       this.Lanes.ListChanged += this.Lanes_ListChanged;
       this.EnsureEmptyLane();
 
@@ -119,8 +121,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
       {
         await this.client.LaneDeleteAsync(item.Id);
       }
-
-      await this.service.Refresh();
 
       regionManager.RequestNavigate(App.RegionName, new Uri(nameof(HistoryPage), UriKind.Relative));
     }

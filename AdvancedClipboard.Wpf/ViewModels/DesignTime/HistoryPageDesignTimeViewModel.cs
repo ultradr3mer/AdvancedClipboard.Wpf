@@ -16,15 +16,16 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 
     public HistoryPageDesignTimeViewModel() : base(null, null, null, null)
     {
-      this.Entries = new EntriesDesignTimeViewModel().Entries;
+      this.Entries = new BindingList<HistoryPageEntryViewModel>();
+        //new EntriesDesignTimeViewModel().Entries;
 
-      this.Lanes = new BindingList<LaneEntryViewModel>()
-      {
-        this.CreateLaneEntry("#FFDC143C", "Sql Abfragen"),
-        this.CreateLaneEntry("#FF9400D3", "Status notizen"),
-        this.CreateLaneEntry("#FF6495ED", "Helferlein"),
-        this.CreateLaneEntry("#FFFFFFFF", "White"),
-      };
+      this.Lanes = new BindingList<LaneEntryViewModel>();
+      //{
+      //  this.CreateLaneEntry("#FFDC143C", "Sql Abfragen"),
+      //  this.CreateLaneEntry("#FF9400D3", "Status notizen"),
+      //  this.CreateLaneEntry("#FF6495ED", "Helferlein"),
+      //  this.CreateLaneEntry("#FFFFFFFF", "White"),
+      //};
     }
 
     private LaneEntryViewModel CreateLaneEntry(string color, string name)

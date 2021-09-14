@@ -54,17 +54,17 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
 
     private HistoryPageEntryViewModel CreateFileEntry(string url, string fileName, SolidColorBrush laneColorBrush = default(SolidColorBrush))
     {
-      return new HistoryPageEntryViewModel(null, null) { LaneColorBrush = laneColorBrush }.GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.File, FileName = fileName });
+      return new HistoryPageEntryViewModel(null, null, null) { LaneColorBrush = laneColorBrush }.GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.File, FileName = fileName });
     }
 
     private HistoryPageEntryViewModel CreateImageEntry(string url, SolidColorBrush laneColorBrush = default(SolidColorBrush))
     {
-      return new HistoryPageEntryViewModel(null, null) { LaneColorBrush = laneColorBrush }.GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.Image });
+      return new HistoryPageEntryViewModel(null, null, null) { LaneColorBrush = laneColorBrush }.GetWithDataModel(new ClipboardGetData { FileContentUrl = url, ContentTypeId = ContentTypes.Image });
     }
 
     private HistoryPageEntryViewModel CreateTextEntry(string text, SolidColorBrush laneColorBrush = default(SolidColorBrush))
     {
-      return new HistoryPageEntryViewModel(null, null) { LaneColorBrush = laneColorBrush, TextContent = text };
+      return new HistoryPageEntryViewModel(null, null, null) { LaneColorBrush = laneColorBrush, TextContent = text };
     }
 
     #endregion Methods

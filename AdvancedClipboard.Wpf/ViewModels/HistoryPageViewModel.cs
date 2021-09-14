@@ -1,5 +1,6 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Extensions;
+using AdvancedClipboard.Wpf.Interfaces;
 using AdvancedClipboard.Wpf.Services;
 using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
@@ -8,13 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
-  internal class HistoryPageViewModel : BaseViewModel, INavigationAware
+  internal class HistoryPageViewModel : BaseViewModel, INavigationAware, IEntryHostViewModel
   {
     #region Fields
 
@@ -24,7 +26,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private readonly IRegionManager regionManager;
     private readonly IUnityContainer container;
     private readonly ClipboardService service;
-    private bool isInitialized;
 
     #endregion Fields
 
@@ -57,15 +58,25 @@ namespace AdvancedClipboard.Wpf.ViewModels
     #region Properties
 
     public ICommand AddCommand { get; }
+
     public DelegateCommand AddTextInputCommand { get; }
+    
     public bool CanAddTextInput { get; set; }
-    public BindingList<HistoryPageEntryViewModel> Entries { get; set; }
+    
+    public BindingList<HistoryPageEntryViewModel> Entries { get; protected set; }
+    
     public Visibility InputBoxVisibility { get; set; }
+    
     public ICommand OpenCloseTextInputCommand { get; }
+    
     public string OpenCloseTextInputContent { get; set; }
+    
     public ICommand RefreshCommand { get; }
+    
     public string TextInput { get; set; }
-    public BindingList<LaneEntryViewModel> Lanes { get; set; }
+    
+    public BindingList<LaneEntryViewModel> Lanes { get; protected set; }
+    
     public ICommand OpenConfigurationCommand { get; }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -75,35 +86,42 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
+      this.Lanes.Clear();
+      this.Entries.Clear();
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      if (!this.isInitialized)
-      {
-        this.Load();
-        this.isInitialized = true;
-      }
+      this.Load();
     }
 
     #endregion Properties
 
     #region Methods
 
-    protected virtual void Load()
+    protected virtual async void Load()
     {
       this.InputBoxVisibility = Visibility.Collapsed;
 
-      this.service.ClipboardItems.ListChanged += this.ClipboardItemsListChanged;
-      this.Entries = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
+      Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
+      Task<ClipboardPageGetData> entriesTask = this.client.ClipboardGetpageAsync(1);
 
-      this.service.Lanes.ListChanged += this.LaneItemsListChanged;
-      this.Lanes = new BindingList<LaneEntryViewModel>(this.service.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
+      this.Lanes = new BindingList<LaneEntryViewModel>((await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
+      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).PageContent.Select(CreateEntryViewModel).ToList());
     }
 
-    private void AddCommandExecute()
+    private HistoryPageEntryViewModel CreateEntryViewModel(ClipboardGetData o)
     {
-      this.service.AddClipboardContent();
+      return this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o);
+    }
+
+    private async void AddCommandExecute()
+    {
+      var newItems = await this.service.AddClipboardContent();
+      foreach (var item in newItems)
+      {
+        this.Entries.Insert(0, this.CreateEntryViewModel(item));
+      }
     }
 
     private bool AddTextInputCommandCanExecute()
@@ -111,9 +129,10 @@ namespace AdvancedClipboard.Wpf.ViewModels
       return !string.IsNullOrWhiteSpace(this.TextInput);
     }
 
-    private void AddTextInputCommandExecute()
+    private async void AddTextInputCommandExecute()
     {
-      this.service.AddClipboardContent(this.TextInput);
+      var newItem = await this.service.AddClipboardContent(this.TextInput);
+      this.Entries.Insert(0, this.CreateEntryViewModel(newItem));
       this.TextInput = string.Empty;
     }
 
@@ -185,9 +204,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
       }
     }
 
-    private async void RefreshCommandExecute()
+    private void RefreshCommandExecute()
     {
-      await this.service.Refresh();
+      this.Load();
     }
 
     #endregion Methods

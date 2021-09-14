@@ -65,7 +65,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public string OpenCloseTextInputContent { get; set; }
     public ICommand RefreshCommand { get; }
     public string TextInput { get; set; }
-    public BindingList<LaneViewModel> Lanes { get; set; }
+    public BindingList<LaneEntryViewModel> Lanes { get; set; }
     public ICommand OpenConfigurationCommand { get; }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -98,7 +98,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.Entries = new BindingList<HistoryPageEntryViewModel>(this.service.ClipboardItems.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
 
       this.service.Lanes.ListChanged += this.LaneItemsListChanged;
-      this.Lanes = new BindingList<LaneViewModel>(this.service.Lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o)).ToList());
+      this.Lanes = new BindingList<LaneEntryViewModel>(this.service.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
     }
 
     private void AddCommandExecute()
@@ -155,7 +155,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       if (e.ListChangedType == ListChangedType.ItemAdded)
       {
         LaneGetData addedData = listSender[e.NewIndex];
-        LaneViewModel newEntry = this.container.Resolve<LaneViewModel>().GetWithDataModel(addedData);
+        LaneEntryViewModel newEntry = this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(addedData);
         this.Lanes.Insert(e.NewIndex, newEntry);
       }
       else if (e.ListChangedType == ListChangedType.ItemDeleted)
@@ -166,7 +166,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
       {
         if (listSender.Count == 0)
         {
-          this.Lanes = new BindingList<LaneViewModel>();
+          this.Lanes = new BindingList<LaneEntryViewModel>();
         }
       }
     }

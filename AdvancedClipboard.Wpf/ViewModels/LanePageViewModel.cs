@@ -78,7 +78,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private async void Load()
     {
-      var items = (await this.client.ClipboardGetlaneAsync(this.Id)).ToList();
+      var items = (await this.client.ClipboardGetlaneAsync(this.Id)).Reverse().ToList();
 
       this.Entries = new BindingList<HistoryPageEntryViewModel>(items.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().GetWithDataModel(o)).ToList());
     }

@@ -18,7 +18,7 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
     {
       this.Entries = new EntriesDesignTimeViewModel().Entries;
 
-      this.Lanes = new BindingList<LaneViewModel>()
+      this.Lanes = new BindingList<LaneEntryViewModel>()
       {
         this.CreateLaneEntry("#FFDC143C", "Sql Abfragen"),
         this.CreateLaneEntry("#FF9400D3", "Status notizen"),
@@ -27,9 +27,9 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
       };
     }
 
-    private LaneViewModel CreateLaneEntry(string color, string name)
+    private LaneEntryViewModel CreateLaneEntry(string color, string name)
     {
-      return new LaneViewModel(null).GetWithDataModel(new LaneGetData { Color = color, Name = name });
+      return new LaneEntryViewModel(null).GetWithDataModel(new LaneGetData { Color = color, Name = name });
     }
 
     #endregion Constructors

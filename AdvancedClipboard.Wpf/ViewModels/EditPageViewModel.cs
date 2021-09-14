@@ -24,7 +24,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private readonly Client client;
     private readonly IUnityContainer container;
     private readonly HistoryPageViewModel historyPageViewModel;
-    private readonly LaneViewModel NoLane = new LaneViewModel(null) { Name = "None" };
+    private readonly LaneEntryViewModel NoLane = new LaneEntryViewModel(null) { Name = "None" };
     private readonly IRegionManager regionManager;
     private readonly ClipboardService service;
 
@@ -53,11 +53,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public ICommand CopyShareUrl { get; }
     public Guid Id { get; set; }
     public Uri ImageSource { get; set; }
-    public List<LaneViewModel> Lanes { get; set; }
+    public List<LaneEntryViewModel> Lanes { get; set; }
     public ICommand OpenShareUrl { get; }
     public ICommand ReturnCommand { get; }
     public ICommand SaveCommand { get; }
-    public LaneViewModel SelectedLane { get; set; }
+    public LaneEntryViewModel SelectedLane { get; set; }
     public string ShareUrl { get; set; }
     public string TextContent { get; set; }
     public string FileName { get; set; }
@@ -78,7 +78,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      this.Lanes = new[] { this.NoLane }.Concat(this.service.Lanes.Select(o => this.container.Resolve<LaneViewModel>().GetWithDataModel(o))).ToList();
+      this.Lanes = new[] { this.NoLane }.Concat(this.service.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o))).ToList();
 
       this.Id = Guid.Parse(navigationContext.Parameters[EntryIdParmeter].ToString());
 

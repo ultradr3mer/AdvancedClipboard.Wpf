@@ -42,15 +42,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
-	<Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.4.4.0\lib\net462\ControlzEx.dll</HintPath>
-    </Reference>
-    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.2.4.3\lib\net47\MahApps.Metro.dll</HintPath>
-    </Reference>
-	<Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
-    </Reference>
     <Reference Include="ManagedWinapi, Version=0.3.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\mwinapi.0.3.0.3\lib\net40-client\ManagedWinapi.dll</HintPath>
     </Reference>
@@ -176,7 +167,7 @@
     <Compile Include="ViewModels\HistoryPageViewModel.cs" />
     <Compile Include="ViewModels\LaneConfigurationViewModel.cs" />
     <Compile Include="ViewModels\LanePageViewModel.cs" />
-    <Compile Include="ViewModels\LaneViewModel.cs" />
+    <Compile Include="ViewModels\LaneEntryViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\ConfigurationPage.xaml.cs">
       <DependentUpon>ConfigurationPage.xaml</DependentUpon>

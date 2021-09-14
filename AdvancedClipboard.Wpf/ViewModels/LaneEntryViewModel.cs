@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
-  internal class LaneViewModel : BaseViewModel<LaneGetData>
+  internal class LaneEntryViewModel : BaseViewModel<LaneGetData>
   {
     #region Fields
 
@@ -20,7 +20,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Constructors
 
-    public LaneViewModel(IRegionManager regionManager)
+    public LaneEntryViewModel(IRegionManager regionManager)
     {
       this.OpenLaneCommand = new DelegateCommand(this.OpenLaneCommandExecute);
       this.regionManager = regionManager;

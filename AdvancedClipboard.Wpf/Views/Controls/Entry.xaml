@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="AdvancedClipboard.Wpf.Views.Controls.Entry"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:comp="clr-namespace:AdvancedClipboard.Wpf.Composite"
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:local="clr-namespace:AdvancedClipboard.Wpf.Views.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" DataContextChanged="UserControl_DataContextChanged">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <comp:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyBoolConverter" />
+      <comp:UriNullVisibilityConverter x:Key="UriNullVisibilityConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Button Margin="3"
+          Command="{Binding LoadIntoClipboardCommand}"
+          HorizontalContentAlignment="Stretch" 
+          Background="#CC2F2F2F"
+          Padding="0">
+    <Button.Style>
+      <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+        <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderThickness" Value="0" />
+      </Style>
+    </Button.Style>
+    <Grid>
+      <Grid Margin="10,7,7,7">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <RichTextBox x:Name="TextContent" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" IsDocumentEnabled="True" IsReadOnly="True" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" PreviewMouseDown="TextContent_PreviewMouseDown"  />
+        <Image Source="{Binding ImageUrl}" Height="200" Visibility="{Binding ImageUrl, Converter={StaticResource UriNullVisibilityConverter}}" HorizontalAlignment="Left" />
+        <StackPanel Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}" HorizontalAlignment="Left">
+          <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="64" HorizontalAlignment="Center" Opacity="0.5" />
+          <TextBlock Text="{Binding FileName}" TextWrapping="Wrap" />
+        </StackPanel>
+        <Button Command="{Binding EditCommand}" Grid.Column="1" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1" Style="{StaticResource MahApps.Styles.Button.CircleNoBorder}" FontSize="12" Width="20" Height="20" />
+        <Button Command="{Binding DeleteCommand}" Grid.Column="2" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Content="" VerticalAlignment="Top" Padding="3" BorderThickness="1" Width="20" Height="20">
+          <Button.Style>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.CircleNoBorder}">
+              <Setter Property="Background" Value="Transparent" />
+              <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter Property="Background" Value="{StaticResource AdvancedClipboard.Brushes.DeleteButton}" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </Button.Style>
+        </Button>
+      </Grid>
+      <Border CornerRadius="2" Background="{Binding LaneColorBrush}" HorizontalAlignment="Left" Width="3" Margin="1" />
+    </Grid>
+  </Button>
+</UserControl>

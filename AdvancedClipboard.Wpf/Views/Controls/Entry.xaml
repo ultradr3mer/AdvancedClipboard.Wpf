@@ -14,7 +14,7 @@
       <comp:UriNullVisibilityConverter x:Key="UriNullVisibilityConverter" />
     </ResourceDictionary>
   </UserControl.Resources>
-  <Button Margin="3"
+  <Button Margin="1"
           Command="{Binding LoadIntoClipboardCommand}"
           HorizontalContentAlignment="Stretch" 
           Background="#CC2F2F2F"

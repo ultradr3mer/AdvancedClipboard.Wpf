@@ -23,8 +23,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private const string ClosTextInputIcon = "";
     private const string OpenTextInputIcon = "";
     private readonly Client client;
-    private readonly IRegionManager regionManager;
     private readonly IUnityContainer container;
+    private readonly IRegionManager regionManager;
     private readonly ClipboardService service;
 
     #endregion Fields
@@ -48,11 +48,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.PropertyChanged += this.HistoryPageViewModel_PropertyChanged;
     }
 
-    private void OpenConfigurationCommandExecute()
-    {
-      regionManager.RequestNavigate(App.RegionName, new Uri(nameof(ConfigurationPage), UriKind.Relative));
-    }
-
     #endregion Constructors
 
     #region Properties
@@ -60,28 +55,37 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public ICommand AddCommand { get; }
 
     public DelegateCommand AddTextInputCommand { get; }
-    
+
     public bool CanAddTextInput { get; set; }
-    
+
     public BindingList<HistoryPageEntryViewModel> Entries { get; protected set; }
-    
+
     public Visibility InputBoxVisibility { get; set; }
-    
-    public ICommand OpenCloseTextInputCommand { get; }
-    
-    public string OpenCloseTextInputContent { get; set; }
-    
-    public ICommand RefreshCommand { get; }
-    
-    public string TextInput { get; set; }
-    
+
     public BindingList<LaneEntryViewModel> Lanes { get; protected set; }
-    
+
+    public ICommand OpenCloseTextInputCommand { get; }
+
+    public string OpenCloseTextInputContent { get; set; }
+
     public ICommand OpenConfigurationCommand { get; }
+
+    public ICommand RefreshCommand { get; }
+
+    public string TextInput { get; set; }
+
+    #endregion Properties
+
+    #region Methods
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
     {
       return true;
+    }
+
+    public void ItemDeletedCallback(HistoryPageEntryViewModel deletdItem)
+    {
+      this.Entries.Remove(deletdItem);
     }
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
@@ -95,10 +99,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.Load();
     }
 
-    #endregion Properties
-
-    #region Methods
-
     protected virtual async void Load()
     {
       this.InputBoxVisibility = Visibility.Collapsed;
@@ -108,11 +108,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
       this.Lanes = new BindingList<LaneEntryViewModel>((await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
       this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).Reverse().Select(CreateEntryViewModel).ToList());
-    }
-
-    private HistoryPageEntryViewModel CreateEntryViewModel(ClipboardGetData o)
-    {
-      return this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o);
     }
 
     private async void AddCommandExecute()
@@ -159,6 +154,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
       }
     }
 
+    private HistoryPageEntryViewModel CreateEntryViewModel(ClipboardGetData o)
+    {
+      return this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o);
+    }
+
     private void HistoryPageViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       if (e.PropertyName == nameof(TextInput))
@@ -202,6 +202,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
         this.InputBoxVisibility = Visibility.Collapsed;
         this.OpenCloseTextInputContent = OpenTextInputIcon;
       }
+    }
+
+    private void OpenConfigurationCommandExecute()
+    {
+      regionManager.RequestNavigate(App.RegionName, new Uri(nameof(ConfigurationPage), UriKind.Relative));
     }
 
     private void RefreshCommandExecute()

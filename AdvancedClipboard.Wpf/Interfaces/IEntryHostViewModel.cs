@@ -8,7 +8,10 @@ namespace AdvancedClipboard.Wpf.Interfaces
     #region Properties
 
     BindingList<HistoryPageEntryViewModel> Entries { get; }
+
     BindingList<LaneEntryViewModel> Lanes { get; }
+
+    public void ItemDeletedCallback(HistoryPageEntryViewModel deletdItem);
 
     #endregion Properties
   }

@@ -39,24 +39,19 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.ReturnCommand = new DelegateCommand(this.ReturnCommandExecute);
     }
 
-    private void ReturnCommandExecute()
-    {
-      this.regionManager.RequestNavigate(App.RegionName, nameof(HistoryPage));
-    }
-
     #endregion Constructors
 
     #region Properties
 
     public SolidColorBrush BackgroundBrush { get; private set; }
 
-    public BindingList<LaneEntryViewModel> Lanes { get; protected set; }
-
     public BindingList<HistoryPageEntryViewModel> Entries { get; protected set; }
 
     public SolidColorBrush ForegroundBrush { get; private set; }
 
     public Guid Id { get; set; }
+
+    public BindingList<LaneEntryViewModel> Lanes { get; protected set; }
 
     public Brush LaneTextBrush { get; set; }
 
@@ -73,6 +68,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
       return true;
     }
 
+    public void ItemDeletedCallback(HistoryPageEntryViewModel deletdItem)
+    {
+      this.Entries.Remove(deletdItem);
+    }
+
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
       this.Entries.Clear();
@@ -86,6 +86,17 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.Load();
     }
 
+    protected override void OnReadingDataModel(LaneGetData data)
+    {
+      var backColor = (Color)ColorConverter.ConvertFromString(data.Color);
+      this.BackgroundBrush = new SolidColorBrush(backColor);
+
+      var foregroundColor = backColor.CalculateLuminance() > 0.6 ? Colors.Black : Colors.White;
+      this.ForegroundBrush = new SolidColorBrush(foregroundColor);
+
+      this.Name = data.Name;
+    }
+
     private async void Load()
     {
       Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
@@ -96,15 +107,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).Reverse().Select(o => this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o)).ToList());
     }
 
-    protected override void OnReadingDataModel(LaneGetData data)
+    private void ReturnCommandExecute()
     {
-      var backColor = (Color)ColorConverter.ConvertFromString(data.Color);
-      this.BackgroundBrush = new SolidColorBrush(backColor);
-
-      var foregroundColor = backColor.CalculateLuminance() > 0.6 ? Colors.Black : Colors.White;
-      this.ForegroundBrush = new SolidColorBrush(foregroundColor);
-
-      this.Name = data.Name;
+      this.regionManager.RequestNavigate(App.RegionName, nameof(HistoryPage));
     }
 
     #endregion Methods

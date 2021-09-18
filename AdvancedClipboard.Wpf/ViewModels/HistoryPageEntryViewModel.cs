@@ -34,15 +34,25 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.LoadIntoClipboardCommand = new DelegateCommand(this.LoadIntoClipboardCommandExecute);
       this.DeleteCommand = new DelegateCommand(this.DeleteCommandExecute);
       this.EditCommand = new DelegateCommand(this.EditCommandExecute);
+      this.ConfirmNo = new DelegateCommand(this.ConfirmNoExecute);
+      this.ConfirmYes = new DelegateCommand(this.ConfirmYesExecute);
 
       this.clipboardService = clipboardService;
       this.regionManager = regionManager;
       this.client = client;
+
+      this.ConfirmVisibility = Visibility.Collapsed;
     }
 
     #endregion Constructors
 
     #region Properties
+
+    public ICommand ConfirmNo { get; }
+
+    public Visibility ConfirmVisibility { get; set; }
+
+    public ICommand ConfirmYes { get; }
 
     public ICommand DeleteCommand { get; }
 
@@ -98,17 +108,21 @@ namespace AdvancedClipboard.Wpf.ViewModels
       }
     }
 
-    private async void DeleteCommandExecute()
+    private void ConfirmNoExecute()
     {
-      if (MessageBox.Show("Are you sure you want to delete this entry?",
-                         "Advanced Clipboard",
-                         MessageBoxButton.OKCancel,
-                         MessageBoxImage.Warning) != MessageBoxResult.OK)
-      {
-        return;
-      }
+      this.ConfirmVisibility = Visibility.Collapsed;
+    }
 
+    private async void ConfirmYesExecute()
+    {
       await this.client.ClipboardDeleteAsync(this.Id);
+
+      this.hostViewModel.Entries.Remove(this);
+    }
+
+    private void DeleteCommandExecute()
+    {
+      this.ConfirmVisibility = Visibility.Visible;
     }
 
     private void EditCommandExecute()

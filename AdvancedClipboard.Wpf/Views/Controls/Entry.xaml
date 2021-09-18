@@ -54,6 +54,25 @@
         </Button>
       </Grid>
       <Border CornerRadius="2" Background="{Binding LaneColorBrush}" HorizontalAlignment="Left" Width="3" Margin="1" />
+      <Border Margin="0" 
+              CornerRadius="3" 
+              Background="{DynamicResource MahApps.Brushes.AccentBase}" 
+              BorderBrush="{DynamicResource MahApps.Brushes.Button.Border.Focus}" 
+              BorderThickness="1"
+              VerticalAlignment="Stretch"
+              Visibility="{Binding ConfirmVisibility}">
+        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <Label Content="Are you sure?"/>
+          <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="1">
+            <Button Command="{Binding ConfirmYes}" Margin="3" Content="Yes" Padding="7" />
+            <Button Command="{Binding ConfirmNo}" Margin="3" Content="No" Padding="7" />
+          </StackPanel>
+        </Grid>
+      </Border>
     </Grid>
   </Button>
 </UserControl>

@@ -104,10 +104,10 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.InputBoxVisibility = Visibility.Collapsed;
 
       Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
-      Task<ClipboardPageGetData> entriesTask = this.client.ClipboardGetpageAsync(1);
+      Task<ICollection<ClipboardGetData>> entriesTask = this.client.ClipboardGetAsync(null);
 
       this.Lanes = new BindingList<LaneEntryViewModel>((await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
-      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).PageContent.Select(CreateEntryViewModel).ToList());
+      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).Reverse().Select(CreateEntryViewModel).ToList());
     }
 
     private HistoryPageEntryViewModel CreateEntryViewModel(ClipboardGetData o)

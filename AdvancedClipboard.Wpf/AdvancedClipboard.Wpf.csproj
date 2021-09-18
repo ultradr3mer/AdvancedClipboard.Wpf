@@ -102,7 +102,7 @@
     <Compile Include="Composite\BaseViewModelOfT.cs" />
     <Compile Include="Composite\BaseViewModelOfTinTout.cs" />
     <Compile Include="Composite\ObjectNullBoolConverter.cs" />
-    <Compile Include="Composite\UriNullVisibilityConverter.cs" />
+    <Compile Include="Composite\ObjectNullVisibilityConverter.cs" />
     <Compile Include="Composite\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Constants\ContentTypes.cs" />
     <Compile Include="Data\SimpleFileTokenData.cs" />

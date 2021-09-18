@@ -12,7 +12,7 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <comp:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyBoolConverter" />
-      <comp:UriNullVisibilityConverter x:Key="UriNullVisibilityConverter" />
+      <comp:ObjectNullVisibilityConverter x:Key="ObjectNullVisibilityConverter" />
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
@@ -32,7 +32,7 @@
         <TextBox Margin="5,5,30,5" TextDecorations="Underline" Text="{Binding ShareUrl}" Foreground="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" MouseDoubleClick="linkTextboxMouseDoubleClick" IsReadOnly="True" />
         <Button Grid.Column="1" Margin="5" Content="" FontFamily="Segoe MDL2 Assets" Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Width="26" Padding="0" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Stretch" Command="{Binding CopyShareUrl}" />
       </Grid>
-      <Image Source="{Binding ImageSource}" Visibility="{Binding ImageSource, Converter={StaticResource UriNullVisibilityConverter}}" MaxHeight="550"/>
+      <Image Source="{Binding ImageSource}" Visibility="{Binding ImageSource, Converter={StaticResource ObjectNullVisibilityConverter}}" MaxHeight="550"/>
       <Grid HorizontalAlignment="Center" Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}">
         <Ellipse Fill="{StaticResource MahApps.Brushes.Control.Background}" Stroke="{StaticResource MahApps.Brushes.Control.Border}" StrokeThickness="2" />
         <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="128" HorizontalAlignment="Center" Opacity="0.5" Margin="30"/>

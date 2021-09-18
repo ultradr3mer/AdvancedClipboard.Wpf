@@ -8,9 +8,11 @@ using Prism.Commands;
 using Prism.Regions;
 using System;
 using System.Linq;
+using System.Net.Cache;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
@@ -52,7 +54,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public Guid Id { get; set; }
 
-    public Uri ImageUrl { get; set; }
+    public ImageSource ImageSource { get; set; }
 
     public SolidColorBrush LaneColorBrush { get; internal set; }
 
@@ -74,7 +76,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
     {
       if (data.ContentTypeId == ContentTypes.Image)
       {
-        this.ImageUrl = SimpleFileTokenData.CreateUrl(data.FileContentUrl);
+        BitmapImage bitmapImage = new BitmapImage(SimpleFileTokenData.CreateUrl(data.FileContentUrl), new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable));
+        this.ImageSource = bitmapImage;
         this.FileName = string.Empty;
       }
       else if (data.ContentTypeId == ContentTypes.File)

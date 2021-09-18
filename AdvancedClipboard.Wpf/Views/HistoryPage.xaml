@@ -16,7 +16,7 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <comp:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyBoolConverter" />
-      <comp:UriNullVisibilityConverter x:Key="UriNullVisibilityConverter" />
+      <comp:ObjectNullVisibilityConverter x:Key="ObjectNullVisibilityConverter" />
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid Margin="0">

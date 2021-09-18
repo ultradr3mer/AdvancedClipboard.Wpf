@@ -89,11 +89,11 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private async void Load()
     {
       Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
-      Task<ClipboardPageGetData> entriesTask = this.client.ClipboardGetlanepageAsync(this.Id, 1);
+      Task<ICollection<ClipboardGetData>> entriesTask = this.client.ClipboardGetlaneAsync(this.Id);
 
       this.SetDataModel((await lanesTask).Single(o => o.Id == this.Id));
       this.Lanes = new BindingList<LaneEntryViewModel>((await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
-      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).PageContent.Select(o => this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o)).ToList());
+      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).Reverse().Select(o => this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o)).ToList());
     }
 
     protected override void OnReadingDataModel(LaneGetData data)

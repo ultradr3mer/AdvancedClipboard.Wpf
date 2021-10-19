@@ -24,10 +24,10 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private const string ClosTextInputIcon = "";
     private const string OpenTextInputIcon = "";
-    private readonly Client client;
-    private readonly IUnityContainer container;
-    private readonly IRegionManager regionManager;
-    private readonly ClipboardService service;
+    protected readonly Client client;
+    protected readonly IUnityContainer container;
+    protected readonly IRegionManager regionManager;
+    protected readonly ClipboardService service;
 
     #endregion Fields
 
@@ -62,7 +62,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public BindingList<HistoryPageEntryViewModel> Entries { get; protected set; }
 
-    public Visibility InputBoxVisibility { get; set; }
+    public Visibility InputBoxVisibility { get; set; } = Visibility.Collapsed;
 
     public BindingList<LaneEntryViewModel> Lanes { get; protected set; }
 
@@ -75,6 +75,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public ICommand RefreshCommand { get; }
 
     public string TextInput { get; set; }
+
+    public Guid? LaneId { get; set; } = null;
 
     #endregion Properties
 
@@ -90,19 +92,17 @@ namespace AdvancedClipboard.Wpf.ViewModels
       this.Entries.Remove(deletdItem);
     }
 
-    public void OnNavigatedFrom(NavigationContext navigationContext)
+    public virtual void OnNavigatedFrom(NavigationContext navigationContext)
     {
     }
 
-    public void OnNavigatedTo(NavigationContext navigationContext)
+    public virtual void OnNavigatedTo(NavigationContext navigationContext)
     {
       this.Load();
     }
 
     protected virtual async void Load()
     {
-      this.InputBoxVisibility = Visibility.Collapsed;
-
       var data = await this.client.ClipboardGetwithcontextAsync(null);
 
       this.Lanes = new BindingList<LaneEntryViewModel>(data.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
@@ -111,7 +111,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private async void AddCommandExecute()
     {
-      var newItems = await this.service.AddClipboardContent();
+      var newItems = await this.service.AddClipboardContent(this.LaneId);
       foreach (var item in newItems)
       {
         this.Entries.Insert(0, this.CreateEntryViewModel(item));
@@ -125,7 +125,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private async void AddTextInputCommandExecute()
     {
-      var newItem = await this.service.AddClipboardContent(this.TextInput);
+      var newItem = await this.service.AddClipboardContent(this.TextInput, this.LaneId);
       this.Entries.Insert(0, this.CreateEntryViewModel(newItem));
       this.TextInput = string.Empty;
     }

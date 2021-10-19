@@ -118,7 +118,7 @@
           <Grid>
             <Ellipse Fill="{TemplateBinding Background}" StrokeThickness="0" />
             <Ellipse x:Name="ellipsebg"
-                                 Fill="{DynamicResource MahApps.Brushes.Accent}"
+                                 Fill="{TemplateBinding Foreground}"
                                  Opacity="0"
                                  StrokeThickness="0" />
             <Ellipse x:Name="ellipse"
@@ -139,7 +139,7 @@
                     <DoubleAnimation Storyboard.TargetName="ellipsebg"
                                                          Storyboard.TargetProperty="Opacity"
                                                          From="0"
-                                                         To="1"
+                                                         To="0.2"
                                                          Duration="0:0:0.3" />
                   </Storyboard>
                 </BeginStoryboard>
@@ -155,7 +155,6 @@
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.ExitActions>
-              <Setter TargetName="PART_ContentPresenter" Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
               <Setter TargetName="ellipse" Property="Stroke" Value="{DynamicResource MahApps.Brushes.Accent}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
@@ -165,7 +164,6 @@
               <Setter TargetName="ellipse" Property="Opacity" Value="0" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-              <Setter TargetName="PART_ContentPresenter" Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.Gray7}" />
               <Setter TargetName="ellipse" Property="Opacity" Value="0.3" />
             </Trigger>
           </ControlTemplate.Triggers>

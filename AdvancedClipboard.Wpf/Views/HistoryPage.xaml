@@ -20,90 +20,47 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid Margin="0">
-    <ScrollViewer>
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Border Background="Black" CornerRadius="4" Margin="2" Grid.ColumnSpan="2" Opacity="0.4"/>
-        <ItemsControl ItemsSource="{Binding Lanes}" Margin="3">
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <WrapPanel/>
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Button Margin="1"
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid VerticalAlignment="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <Border Background="Black" CornerRadius="4" Margin="2" Grid.ColumnSpan="2" Opacity="0.4"/>
+      <ItemsControl ItemsSource="{Binding Lanes}" Margin="3">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Margin="1"
                   Command="{Binding OpenLaneCommand}"
                   HorizontalContentAlignment="Stretch" Background="{Binding BackgroundBrush}" SnapsToDevicePixels="True">
-                <Button.Style>
-                  <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                    <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
-                    <Setter Property="FontWeight" Value="Normal" />
-                    <Setter Property="FontSize" Value="14" />
-                    <Setter Property="BorderThickness" Value="0" />
-                  </Style>
-                </Button.Style>
-                <TextBlock Text="{Binding Name}" Foreground="{Binding ForegroundBrush}"/>
-              </Button>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <Button Content="" Grid.Column="1" Margin="4" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
-        <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2" Margin="1,1,1,45"/>
-      </Grid>
+              <Button.Style>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                  <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
+                  <Setter Property="FontWeight" Value="Normal" />
+                  <Setter Property="FontSize" Value="14" />
+                  <Setter Property="BorderThickness" Value="0" />
+                </Style>
+              </Button.Style>
+              <TextBlock Text="{Binding Name}" Foreground="{Binding ForegroundBrush}"/>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <Button Content="" Grid.Column="1" Margin="4" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
+    </Grid>
+    <ScrollViewer Grid.Row="1">
+      <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2" Margin="1,1,1,45"/>
     </ScrollViewer>
-    <StackPanel VerticalAlignment="Bottom" Margin="0,0,16,0">
-      <StackPanel HorizontalAlignment="Right"
-                Orientation="Horizontal">
-        <ToggleButton Content="{Binding OpenCloseTextInputContent}"
-            Width="48"
-            Height="48"
-            Style="{DynamicResource MahApps.Styles.ToggleButton.CircleNoBorder}"
-            Background="{DynamicResource MahApps.Brushes.AccentBase}"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="24"
-            Margin="5"
-            Opacity="1"
-            Command="{Binding OpenCloseTextInputCommand}"
-            CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
-        <Button Content="&#xE109;"
-            Width="48"
-            Height="48"
-            Style="{DynamicResource MahApps.Styles.Button.CircleNoBorder}"
-            Background="{DynamicResource MahApps.Brushes.AccentBase}"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="24"
-            Margin="5"
-            Opacity="1"
-            Command="{Binding AddCommand}" />
-        <Button Content="&#xE149;"
-            Width="48"
-            Height="48"
-            Style="{DynamicResource MahApps.Styles.Button.CircleNoBorder}"
-            Background="{DynamicResource MahApps.Brushes.AccentBase}"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="24"
-            Margin="5"
-            Opacity="1"
-            Command="{Binding RefreshCommand}" />
-      </StackPanel>
-      <Border Margin="5" Background="{DynamicResource MahApps.Brushes.Gray2}" CornerRadius="5" Visibility="{Binding InputBoxVisibility}">
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-          <TextBox Text="{Binding TextInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4" AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" />
-          <Button Command="{Binding AddTextInputCommand}" Margin="4" Content="&#xE724;" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="24" BorderBrush="{DynamicResource MahApps.Brushes.Gray10}" />
-        </Grid>
-      </Border>
-    </StackPanel>
+    <Controls:LowerMenu Grid.Row="1"
+                        ButtonsBackgroundBrush="{DynamicResource MahApps.Brushes.AccentBase}" 
+                        ButtonsForegroundBrush="White"/>
   </Grid>
 </UserControl>

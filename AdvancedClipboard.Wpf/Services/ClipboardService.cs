@@ -47,7 +47,7 @@ namespace AdvancedClipboard.Wpf.Services
 
     #region Methods
 
-    public async Task<IList<ClipboardGetData>> AddClipboardContent()
+    public async Task<IList<ClipboardGetData>> AddClipboardContent(Guid? laneId)
     {
       string textContent;
       BitmapSource imageContent;
@@ -55,23 +55,23 @@ namespace AdvancedClipboard.Wpf.Services
       if (data.GetDataPresent(DataFormats.FileDrop))
       {
         var files = (string[])data.GetData(DataFormats.FileDrop);
-        return await this.PostFilesAsync(files);
+        return await this.PostFilesAsync(files, laneId);
       }
       if (!string.IsNullOrEmpty(textContent = Clipboard.GetText()))
       {
-        return new List<ClipboardGetData> { await this.PostPlaintextAsync(textContent) };
+        return new List<ClipboardGetData> { await this.PostPlaintextAsync(textContent, laneId) };
       }
       else if ((imageContent = Clipboard.GetImage()) != null)
       {
-        return new List<ClipboardGetData> { await this.PostImageAsync(imageContent) };
+        return new List<ClipboardGetData> { await this.PostImageAsync(imageContent, laneId) };
       }
 
       return new List<ClipboardGetData>();
     }
 
-    internal async Task<ClipboardGetData> AddClipboardContent(string textInput)
+    internal async Task<ClipboardGetData> AddClipboardContent(string textInput, Guid? laneId)
     {
-      return await this.PostPlaintextAsync(textInput);
+      return await this.PostPlaintextAsync(textInput, laneId);
     }
 
     internal async void SendToClipboard(ClipboardGetData clipboardGetData)
@@ -107,19 +107,19 @@ namespace AdvancedClipboard.Wpf.Services
       }
     }
 
-    private async Task<IList<ClipboardGetData>> PostFilesAsync(string[] files)
+    private async Task<IList<ClipboardGetData>> PostFilesAsync(string[] files, Guid? laneId)
     {
       var result = new List<ClipboardGetData>();
       foreach (var file in files)
       {
         var fileName = Path.GetFileName(file);
         using var stream = File.OpenRead(file);
-        result.Add(await this.client.ClipboardPostnamedfileAsync(fileName, new FileParameter(stream)));
+        result.Add(await this.client.ClipboardPostnamedfileAsync(fileName, laneId, new FileParameter(stream)));
       }
       return result;
     }
 
-    private async Task<ClipboardGetData> PostImageAsync(BitmapSource imageContent)
+    private async Task<ClipboardGetData> PostImageAsync(BitmapSource imageContent, Guid? laneId)
     {
       using var memoryStream = new MemoryStream();
 
@@ -130,12 +130,12 @@ namespace AdvancedClipboard.Wpf.Services
 
       memoryStream.Seek(0, SeekOrigin.Begin);
 
-      return await this.client.ClipboardPostfileAsync(".png", new FileParameter(memoryStream));
+      return await this.client.ClipboardPostfileAsync(".png", laneId, new FileParameter(memoryStream));
     }
 
-    private async Task<ClipboardGetData> PostPlaintextAsync(string textContent)
+    private async Task<ClipboardGetData> PostPlaintextAsync(string textContent, Guid? laneId)
     {
-      return await this.client.ClipboardPostplaintextAsync(new ClipboardPostPlainTextData() { Content = textContent });
+      return await this.client.ClipboardPostplaintextAsync(new ClipboardPostPlainTextData() { Content = textContent, LaneGuid = laneId });
     }
 
     #endregion Methods

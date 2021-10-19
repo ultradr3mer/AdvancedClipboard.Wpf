@@ -618,28 +618,32 @@ namespace AdvancedClipboard.Wpf.Services
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostfileAsync(string fileExtension, FileParameter file)
+        public System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostfileAsync(string fileExtension, System.Guid? laneId, FileParameter file)
         {
-            return ClipboardPostfileAsync(fileExtension, file, System.Threading.CancellationToken.None);
+            return ClipboardPostfileAsync(fileExtension, laneId, file, System.Threading.CancellationToken.None);
         }
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public ClipboardGetData ClipboardPostfile(string fileExtension, FileParameter file)
+        public ClipboardGetData ClipboardPostfile(string fileExtension, System.Guid? laneId, FileParameter file)
         {
-            return System.Threading.Tasks.Task.Run(async () => await ClipboardPostfileAsync(fileExtension, file, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await ClipboardPostfileAsync(fileExtension, laneId, file, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostfileAsync(string fileExtension, FileParameter file, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostfileAsync(string fileExtension, System.Guid? laneId, FileParameter file, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Clipboard/PostFile?");
             if (fileExtension != null) 
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("fileExtension") + "=").Append(System.Uri.EscapeDataString(ConvertToString(fileExtension, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (laneId != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("laneId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(laneId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -714,28 +718,32 @@ namespace AdvancedClipboard.Wpf.Services
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostnamedfileAsync(string fileName, FileParameter file)
+        public System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostnamedfileAsync(string fileName, System.Guid? laneId, FileParameter file)
         {
-            return ClipboardPostnamedfileAsync(fileName, file, System.Threading.CancellationToken.None);
+            return ClipboardPostnamedfileAsync(fileName, laneId, file, System.Threading.CancellationToken.None);
         }
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public ClipboardGetData ClipboardPostnamedfile(string fileName, FileParameter file)
+        public ClipboardGetData ClipboardPostnamedfile(string fileName, System.Guid? laneId, FileParameter file)
         {
-            return System.Threading.Tasks.Task.Run(async () => await ClipboardPostnamedfileAsync(fileName, file, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await ClipboardPostnamedfileAsync(fileName, laneId, file, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostnamedfileAsync(string fileName, FileParameter file, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ClipboardGetData> ClipboardPostnamedfileAsync(string fileName, System.Guid? laneId, FileParameter file, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Clipboard/PostNamedFile?");
             if (fileName != null) 
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("fileName") + "=").Append(System.Uri.EscapeDataString(ConvertToString(fileName, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (laneId != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("laneId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(laneId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1699,6 +1707,9 @@ namespace AdvancedClipboard.Wpf.Services
     {
         [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Content { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("laneGuid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? LaneGuid { get; set; }
     
     
     }

@@ -16,7 +16,7 @@ namespace AdvancedClipboard.Wpf.ViewModels.DesignTime
     {
       this.Entries = new EntriesDesignTimeViewModel().Entries;
     
-      this.SetDataModel(this.CreateLaneEntry("#FFDC143C", "Sql Abfragen"));
+      this.SetLane(this.CreateLaneEntry("#FFDC143C", "Sql Abfragen"));
     }
 
     #endregion Constructors

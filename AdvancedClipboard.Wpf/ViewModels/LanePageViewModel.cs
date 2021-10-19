@@ -1,41 +1,30 @@
-﻿using AdvancedClipboard.Wpf.Composite;
-using AdvancedClipboard.Wpf.Extensions;
+﻿using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Interfaces;
 using AdvancedClipboard.Wpf.Services;
-using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
 using Prism.Regions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
 {
-  internal class LanePageViewModel : BaseViewModel<LaneGetData>, INavigationAware, IEntryHostViewModel
+  internal class LanePageViewModel : HistoryPageViewModel, INavigationAware, IEntryHostViewModel
   {
     #region Fields
 
     public const string LaneIdParameter = "Id";
-    private readonly Client client;
-    private readonly ClipboardService clipboardService;
-    private readonly IUnityContainer container;
-    private readonly IRegionManager regionManager;
 
     #endregion Fields
 
     #region Constructors
 
-    public LanePageViewModel(Client client, ClipboardService clipboardService, IUnityContainer container, IRegionManager regionManager)
+    public LanePageViewModel(IUnityContainer container, ClipboardService service, Client client, IRegionManager regionManager)
+      : base(container, service, client, regionManager)
     {
-      this.client = client;
-      this.clipboardService = clipboardService;
-      this.container = container;
-      this.regionManager = regionManager;
       this.ReturnCommand = new DelegateCommand(this.ReturnCommandExecute);
     }
 
@@ -45,15 +34,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public SolidColorBrush BackgroundBrush { get; private set; }
 
-    public BindingList<HistoryPageEntryViewModel> Entries { get; protected set; }
-
     public SolidColorBrush ForegroundBrush { get; private set; }
-
-    public Guid Id { get; set; }
-
-    public BindingList<LaneEntryViewModel> Lanes { get; protected set; }
-
-    public Brush LaneTextBrush { get; set; }
 
     public string Name { get; set; }
 
@@ -63,48 +44,29 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     #region Methods
 
-    public bool IsNavigationTarget(NavigationContext navigationContext)
-    {
-      return true;
-    }
-
-    public void ItemDeletedCallback(HistoryPageEntryViewModel deletdItem)
-    {
-      this.Entries.Remove(deletdItem);
-    }
-
-    public void OnNavigatedFrom(NavigationContext navigationContext)
+    public override void OnNavigatedFrom(NavigationContext navigationContext)
     {
       this.Entries.Clear();
       this.Lanes.Clear();
       this.BackgroundBrush = null;
       this.ForegroundBrush = null;
       this.Name = string.Empty;
+
+      base.OnNavigatedFrom(navigationContext);
     }
 
-    public void OnNavigatedTo(NavigationContext navigationContext)
+    public override void OnNavigatedTo(NavigationContext navigationContext)
     {
-      this.Id = Guid.Parse(navigationContext.Parameters[LanePageViewModel.LaneIdParameter].ToString());
+      this.LaneId = Guid.Parse(navigationContext.Parameters[LanePageViewModel.LaneIdParameter].ToString());
 
-      this.Load();
+      base.OnNavigatedTo(navigationContext);
     }
 
-    protected override void OnReadingDataModel(LaneGetData data)
+    protected override async void Load()
     {
-      var backColor = (Color)ColorConverter.ConvertFromString(data.Color);
-      this.BackgroundBrush = new SolidColorBrush(backColor);
+      var data = await this.client.ClipboardGetlanewithcontextAsync(this.LaneId);
 
-      var foregroundColor = backColor.CalculateLuminance() > 0.6 ? Colors.Black : Colors.White;
-      this.ForegroundBrush = new SolidColorBrush(foregroundColor);
-
-      this.Name = data.Name;
-    }
-
-    private async void Load()
-    {
-      var data = await this.client.ClipboardGetlanewithcontextAsync(this.Id);
-
-      this.SetDataModel(data.Lanes.Single(o => o.Id == this.Id));
+      this.SetLane(data.Lanes.Single(o => o.Id == this.LaneId));
       this.Lanes = new BindingList<LaneEntryViewModel>(data.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
       this.Entries = new BindingList<HistoryPageEntryViewModel>(data.Entries.Reverse().Select(o => this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o)).ToList());
     }
@@ -112,6 +74,17 @@ namespace AdvancedClipboard.Wpf.ViewModels
     private void ReturnCommandExecute()
     {
       this.regionManager.Regions[App.RegionName].NavigationService.Journal.GoBack();
+    }
+
+    protected void SetLane(LaneGetData lane)
+    {
+      var backColor = (Color)ColorConverter.ConvertFromString(lane.Color);
+      this.BackgroundBrush = new SolidColorBrush(backColor);
+
+      var foregroundColor = backColor.CalculateLuminance() > 0.6 ? Colors.Black : Colors.White;
+      this.ForegroundBrush = new SolidColorBrush(foregroundColor);
+
+      this.Name = lane.Name;
     }
 
     #endregion Methods

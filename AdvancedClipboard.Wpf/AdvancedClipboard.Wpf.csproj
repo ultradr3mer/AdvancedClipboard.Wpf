@@ -132,6 +132,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\LowerMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -178,6 +182,9 @@
     </Compile>
     <Compile Include="Views\Controls\Entry.xaml.cs">
       <DependentUpon>Entry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\LowerMenu.xaml.cs">
+      <DependentUpon>LowerMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditPage.xaml.cs">
       <DependentUpon>EditPage.xaml</DependentUpon>

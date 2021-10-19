@@ -19,6 +19,9 @@
       <Button Content="" FontFamily="Segoe MDL2 Assets" Foreground="{Binding ForegroundBrush}" FontSize="24" Style="{StaticResource MahApps.Styles.Button.CircleNoBorder}" Margin="5" Command="{Binding ReturnCommand}" Width="40" Height="40"/>
       <Label Content="{Binding Name}" Foreground="{Binding ForegroundBrush}" FontSize="30" FontFamily="Calibri" VerticalAlignment="Center"/>
     </StackPanel>
-    <Controls:Entries Grid.Row="1" Margin="0,3,0,0"/>
+    <ScrollViewer Grid.Row="1">
+      <Controls:Entries Margin="0,3,0,0"/>
+    </ScrollViewer>
+    <Controls:LowerMenu Grid.Row="1" ButtonsBackgroundBrush="{Binding BackgroundBrush}" ButtonsForegroundBrush="{Binding ForegroundBrush}"/>
   </Grid>
 </UserControl>

@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="AdvancedClipboard.Wpf.Views.Controls.LowerMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AdvancedClipboard.Wpf.Views.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Name="LowerMenuControl">
+  <StackPanel VerticalAlignment="Bottom" Margin="0,0,16,0">
+    <StackPanel HorizontalAlignment="Right"
+                Orientation="Horizontal">
+      <ToggleButton Content="{Binding OpenCloseTextInputContent}"
+            Width="48"
+            Height="48"
+            Style="{DynamicResource MahApps.Styles.ToggleButton.CircleNoBorder}"
+            Background="{Binding Path=(local:LowerMenu.ButtonsBackgroundBrush), ElementName=LowerMenuControl}"
+            Foreground="{Binding Path=(local:LowerMenu.ButtonsForegroundBrush), ElementName=LowerMenuControl}"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="24"
+            Margin="5"
+            Opacity="1"
+            Command="{Binding OpenCloseTextInputCommand}"
+            CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
+      <Button Content="&#xE109;"
+            Width="48"
+            Height="48"
+            Style="{DynamicResource MahApps.Styles.Button.CircleNoBorder}"
+            Background="{Binding Path=(local:LowerMenu.ButtonsBackgroundBrush), ElementName=LowerMenuControl}"
+            Foreground="{Binding Path=(local:LowerMenu.ButtonsForegroundBrush), ElementName=LowerMenuControl}"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="24"
+            Margin="5"
+            Opacity="1"
+            Command="{Binding AddCommand}" />
+      <Button Content="&#xE149;"
+            Width="48"
+            Height="48"
+            Style="{DynamicResource MahApps.Styles.Button.CircleNoBorder}"
+            Background="{Binding Path=(local:LowerMenu.ButtonsBackgroundBrush), ElementName=LowerMenuControl}"
+            Foreground="{Binding Path=(local:LowerMenu.ButtonsForegroundBrush), ElementName=LowerMenuControl}"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="24"
+            Margin="5"
+            Opacity="1"
+            Command="{Binding RefreshCommand}" />
+    </StackPanel>
+    <Border Margin="5" Background="{DynamicResource MahApps.Brushes.Gray2}" CornerRadius="5" Visibility="{Binding InputBoxVisibility}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBox Text="{Binding TextInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4" AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" />
+        <Button Command="{Binding AddTextInputCommand}" Margin="4" Content="&#xE724;" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="24" BorderBrush="{DynamicResource MahApps.Brushes.Gray10}" />
+      </Grid>
+    </Border>
+  </StackPanel>
+</UserControl>

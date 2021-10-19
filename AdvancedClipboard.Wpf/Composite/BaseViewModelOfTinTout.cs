@@ -15,7 +15,11 @@ namespace AdvancedClipboard.Wpf.Composite
 
     public void SetDataModel(Tin data)
     {
-      this.CopyPropertiesFrom(data);
+      if (data != null)
+      {
+        this.CopyPropertiesFrom(data);
+      }
+
       this.attachedDataModel = data;
       this.OnReadingDataModel(data);
     }

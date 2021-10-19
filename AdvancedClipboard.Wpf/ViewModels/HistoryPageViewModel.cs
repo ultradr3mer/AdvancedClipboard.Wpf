@@ -6,12 +6,14 @@ using AdvancedClipboard.Wpf.Views;
 using Prism.Commands;
 using Prism.Regions;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Unity;
 
 namespace AdvancedClipboard.Wpf.ViewModels
@@ -90,8 +92,6 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
-      this.Lanes.Clear();
-      this.Entries.Clear();
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
@@ -103,11 +103,10 @@ namespace AdvancedClipboard.Wpf.ViewModels
     {
       this.InputBoxVisibility = Visibility.Collapsed;
 
-      Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
-      Task<ICollection<ClipboardGetData>> entriesTask = this.client.ClipboardGetAsync(null);
+      var data = await this.client.ClipboardGetwithcontextAsync(null);
 
-      this.Lanes = new BindingList<LaneEntryViewModel>((await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
-      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).Reverse().Select(CreateEntryViewModel).ToList());
+      this.Lanes = new BindingList<LaneEntryViewModel>(data.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
+      this.Entries = new BindingList<HistoryPageEntryViewModel>(data.Entries.Reverse().Select(CreateEntryViewModel).ToList());
     }
 
     private async void AddCommandExecute()

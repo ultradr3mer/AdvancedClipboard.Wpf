@@ -56,7 +56,7 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
         <Button Content="" Grid.Column="1" Margin="4" Width="33" FontFamily="Segoe MDL2 Assets" FontSize="18" Command="{Binding OpenConfigurationCommand}" BorderThickness="0"/>
-        <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2" Margin="1"/>
+        <Controls:Entries Grid.Row="1" Grid.ColumnSpan="2" Margin="1,1,1,45"/>
       </Grid>
     </ScrollViewer>
     <StackPanel VerticalAlignment="Bottom" Margin="0,0,16,0">

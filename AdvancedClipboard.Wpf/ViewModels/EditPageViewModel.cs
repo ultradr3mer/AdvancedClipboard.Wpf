@@ -53,7 +53,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
     public ICommand CopyShareUrl { get; }
     public Guid Id { get; set; }
     public Uri ImageSource { get; set; }
-    public List<LaneEntryViewModel> Lanes { get; set; }
+    public List<LaneEntryViewModel> Lanes { get; set; } = new List<LaneEntryViewModel>();
     public ICommand OpenShareUrl { get; }
     public ICommand ReturnCommand { get; }
     public ICommand SaveCommand { get; }
@@ -74,6 +74,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
+      this.Lanes.Clear();
+      this.SetDataModel(null);
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
@@ -85,15 +87,25 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private async void Load()
     {
-      Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
-      Task<ICollection<ClipboardGetData>> entryTask = this.client.ClipboardGetAsync(this.Id);
+      var data = await this.client.ClipboardGetwithcontextAsync(this.Id);
 
-      this.Lanes = (await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList();
-      this.SetDataModel((await entryTask).Single());
+      this.Lanes = new[] { NoLane }.Concat(data.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o))).ToList();
+      this.SetDataModel(data.Entries.Single());
     }
 
     protected override void OnReadingDataModel(ClipboardGetData data)
     {
+      if(data == null)
+      {
+        this.ImageSource = null;
+        this.FileName = null;
+        this.TextContent = null;
+        this.ShareUrl = null;
+        this.SelectedLane = null;
+
+        return;
+      }
+
       if (data.ContentTypeId == ContentTypes.File)
       {
         this.ImageSource = null;
@@ -131,7 +143,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private void ReturnCommandExecute()
     {
-      this.regionManager.RequestNavigate(App.RegionName, new Uri(nameof(HistoryPage), UriKind.Relative));
+      this.regionManager.Regions[App.RegionName].NavigationService.Journal.GoBack();
     }
 
     private async void SaveCommandExecute()
@@ -147,7 +159,7 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
       await this.client.ClipboardPutAsync(data);
 
-      this.regionManager.RequestNavigate(App.RegionName, new Uri(nameof(HistoryPage), UriKind.Relative));
+      this.ReturnCommandExecute();
     }
 
     #endregion Methods

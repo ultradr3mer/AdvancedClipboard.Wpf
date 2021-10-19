@@ -77,6 +77,9 @@ namespace AdvancedClipboard.Wpf.ViewModels
     {
       this.Entries.Clear();
       this.Lanes.Clear();
+      this.BackgroundBrush = null;
+      this.ForegroundBrush = null;
+      this.Name = string.Empty;
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
@@ -99,17 +102,16 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     private async void Load()
     {
-      Task<ICollection<LaneGetData>> lanesTask = this.client.LaneGetAsync();
-      Task<ICollection<ClipboardGetData>> entriesTask = this.client.ClipboardGetlaneAsync(this.Id);
+      var data = await this.client.ClipboardGetlanewithcontextAsync(this.Id);
 
-      this.SetDataModel((await lanesTask).Single(o => o.Id == this.Id));
-      this.Lanes = new BindingList<LaneEntryViewModel>((await lanesTask).Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
-      this.Entries = new BindingList<HistoryPageEntryViewModel>((await entriesTask).Reverse().Select(o => this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o)).ToList());
+      this.SetDataModel(data.Lanes.Single(o => o.Id == this.Id));
+      this.Lanes = new BindingList<LaneEntryViewModel>(data.Lanes.Select(o => this.container.Resolve<LaneEntryViewModel>().GetWithDataModel(o)).ToList());
+      this.Entries = new BindingList<HistoryPageEntryViewModel>(data.Entries.Reverse().Select(o => this.container.Resolve<HistoryPageEntryViewModel>().SetHost(this).GetWithDataModel(o)).ToList());
     }
 
     private void ReturnCommandExecute()
     {
-      this.regionManager.RequestNavigate(App.RegionName, nameof(HistoryPage));
+      this.regionManager.Regions[App.RegionName].NavigationService.Journal.GoBack();
     }
 
     #endregion Methods

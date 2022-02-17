@@ -38,7 +38,7 @@
         <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="128" HorizontalAlignment="Center" Opacity="0.5" Margin="30" />
       </Grid>
     </StackPanel>
-    <TextBox Margin="5" Text="{Binding FileName}" IsReadOnly="True" Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}" Grid.Row="2" />
+    <TextBox Margin="5" Text="{Binding FileName}" VerticalAlignment="Top" Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}" Grid.Row="2" />
     <TextBox Margin="5" Text="{Binding TextContent}" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" Grid.Row="2" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" />
     <ComboBox Grid.Row="3" Margin="5" ItemsSource="{Binding Lanes}" SelectedItem="{Binding SelectedLane}" BorderThickness="0">
       <ComboBox.ItemTemplate>

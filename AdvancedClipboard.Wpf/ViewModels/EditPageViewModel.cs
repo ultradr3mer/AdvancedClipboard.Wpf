@@ -154,6 +154,10 @@ namespace AdvancedClipboard.Wpf.ViewModels
       {
         data.TextContent = this.TextContent;
       }
+      else if (this.ContentTypeId == ContentTypes.File)
+      {
+        data.FileName = this.FileName;
+      }
 
       data.LaneId = this.SelectedLane != this.NoLane ? this.SelectedLane.Id : (Guid?)null;
 

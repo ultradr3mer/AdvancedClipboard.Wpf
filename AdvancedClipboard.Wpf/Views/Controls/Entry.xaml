@@ -33,7 +33,7 @@
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <RichTextBox x:Name="TextContent" Visibility="{Binding TextContent, Converter={StaticResource StringNullOrEmptyBoolConverter}}" IsDocumentEnabled="True" IsReadOnly="True" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" PreviewMouseDown="TextContent_PreviewMouseDown" />
+        <RichTextBox x:Name="TextContent" Visibility="{Binding TextContentShort, Converter={StaticResource StringNullOrEmptyBoolConverter}}" IsDocumentEnabled="True" IsReadOnly="True" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" PreviewMouseDown="TextContent_PreviewMouseDown" />
         <Image Source="{Binding ImageSource}" Height="200" Visibility="{Binding ImageSource, Converter={StaticResource ObjectNullVisibilityConverter}}" HorizontalAlignment="Left" />
         <StackPanel Visibility="{Binding FileName, Converter={StaticResource StringNullOrEmptyBoolConverter}}" HorizontalAlignment="Left">
           <Label Content="" FontFamily="Segoe MDL2 Assets" FontSize="64" HorizontalAlignment="Center" Opacity="0.5" />

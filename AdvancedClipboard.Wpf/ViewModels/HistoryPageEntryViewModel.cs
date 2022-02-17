@@ -1,6 +1,7 @@
 ﻿using AdvancedClipboard.Wpf.Composite;
 using AdvancedClipboard.Wpf.Constants;
 using AdvancedClipboard.Wpf.Data;
+using AdvancedClipboard.Wpf.Extensions;
 using AdvancedClipboard.Wpf.Interfaces;
 using AdvancedClipboard.Wpf.Services;
 using AdvancedClipboard.Wpf.Views;
@@ -72,6 +73,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
 
     public string TextContent { get; set; }
 
+    public string TextContentShort { get; set; }
+
     #endregion Properties
 
     #region Methods
@@ -106,6 +109,8 @@ namespace AdvancedClipboard.Wpf.ViewModels
         var color = (Color)ColorConverter.ConvertFromString("#5effffff");
         this.LaneColorBrush = new SolidColorBrush(color);
       }
+
+      this.TextContentShort = this.TextContent.TruncateWithEllepsis(700, 8);
     }
 
     private void ConfirmNoExecute()

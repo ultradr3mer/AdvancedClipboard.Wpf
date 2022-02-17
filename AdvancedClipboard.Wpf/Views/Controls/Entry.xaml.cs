@@ -86,7 +86,7 @@ namespace AdvancedClipboard.Wpf.Views.Controls
 
     private void UpdateText()
     {
-      string text = this.ViewModel.TextContent;
+      string text = this.ViewModel.TextContentShort;
       this.TextContent.Document = this.ConvertToFlowDocument(text);
     }
 

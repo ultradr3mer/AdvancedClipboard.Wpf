@@ -1,5 +1,4 @@
-﻿
-using AdvancedClipboard.Wpf.Extensions;
+﻿using AdvancedClipboard.Wpf.Extensions;
 
 namespace AdvancedClipboard.Wpf.Composite
 {
